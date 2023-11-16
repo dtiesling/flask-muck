@@ -6,6 +6,7 @@ from logging import getLogger
 from typing import Optional, Union, Any
 
 from flask import request, Blueprint
+from flask.typing import ResponseReturnValue
 from flask.views import MethodView
 from marshmallow import Schema
 from sqlalchemy.exc import IntegrityError
@@ -19,10 +20,10 @@ from sqlalchemy.sql.elements import (
 )
 from webargs import fields
 from webargs.flaskparser import parser
+from werkzeug.exceptions import MethodNotAllowed, BadRequest, Conflict
 
 from flask_muck.callback import CallbackType
 from flask_muck.callback import MuckCallback
-from flask_muck.exceptions import MuckApiValidationException
 from flask_muck.types import SqlaModelType, JsonDict, ResourceId, SqlaModel
 from flask_muck.utils import (
     get_url_rule,
@@ -68,11 +69,17 @@ class MuckApiView(MethodView):
     allowed_methods: set[str] = {"GET", "POST", "PUT", "PATCH", "DELETE"}
     primary_key_column: str = "id"
     primary_key_type: Union[type[int], type[str]] = int
-    filter_operator_separator: str = "__"
+    operator_separator: str = "__"
 
     @property
     def query(self) -> Query:
         return self.session.query(self.Model)
+
+    def dispatch_request(self, **kwargs: Any) -> ResponseReturnValue:
+        """Overriden to check the list of allowed_methods."""
+        if request.method.lower() not in [m.lower() for m in self.allowed_methods]:
+            raise MethodNotAllowed
+        return super().dispatch_request(**kwargs)
 
     def _execute_callbacks(
         self,
@@ -111,7 +118,7 @@ class MuckApiView(MethodView):
         try:
             return json.loads(filters)
         except JSONDecodeError:
-            raise MuckApiValidationException(f"Filters [{filters}] is not valid json.")
+            raise BadRequest(f"Filters [{filters}] is not valid json.")
 
     def _get_kwargs_from_request_payload(self) -> JsonDict:
         """Creates the correct schema based on request method and returns a sanitized dictionary of kwargs from the
@@ -225,7 +232,7 @@ class MuckApiView(MethodView):
             resource = self._create_resource(kwargs)
         except IntegrityError as e:
             self.session.rollback()
-            raise MuckApiValidationException(str(e))
+            raise Conflict(str(e))
         self._execute_callbacks(resource, kwargs, CallbackType.pre)
         self.session.commit()
         self._execute_callbacks(resource, kwargs, CallbackType.post)
@@ -275,48 +282,49 @@ class MuckApiView(MethodView):
         for column_name, value in filters.items():
             # Get operator.
             operator = None
-            if self.filter_operator_separator in column_name:
-                column_name, operator = column_name.split(
-                    self.filter_operator_separator
-                )
+            if self.operator_separator in column_name:
+                column_name, operator = column_name.split(self.operator_separator)
 
             # Handle nested filters.
             if "." in column_name:
                 relationship_name, column_name = column_name.split(".")
-                field = getattr(self.Model, relationship_name)
+                field = getattr(self.Model, relationship_name, None)
                 if not field:
-                    continue
+                    raise BadRequest(
+                        f"{column_name} is not a valid filter field. The relationship does not exist."
+                    )
                 SqlaModel = field.property.mapper.class_
                 join_models.add(SqlaModel)
             else:
                 SqlaModel = self.Model
 
-            if hasattr(SqlaModel, column_name):
-                column = getattr(SqlaModel, column_name)
-                if operator == "gt":
-                    filter = column > value
-                elif operator == "gte":
-                    filter = column >= value
-                elif operator == "lt":
-                    filter = column < value
-                elif operator == "lte":
-                    filter = column <= value
-                elif operator == "ne":
-                    filter = column != value
-                elif operator == "in":
-                    filter = column.in_(value)
-                elif operator == "not_in":
-                    filter = column.not_in(value)
-                else:
-                    filter = column == value
-                query_filters.append(filter)
+            if not (column := getattr(SqlaModel, column_name, None)):
+                raise BadRequest(f"{column_name} is not a valid filter field.")
+
+            if operator == "gt":
+                filter = column > value
+            elif operator == "gte":
+                filter = column >= value
+            elif operator == "lt":
+                filter = column < value
+            elif operator == "lte":
+                filter = column <= value
+            elif operator == "ne":
+                filter = column != value
+            elif operator == "in":
+                filter = column.in_(value)
+            elif operator == "not_in":
+                filter = column.not_in(value)
+            else:
+                filter = column == value
+            query_filters.append(filter)
         return query_filters, join_models
 
     def _get_query_order_by(
         self, sort: str
     ) -> tuple[Optional[UnaryExpression], set[SqlaModelType]]:
-        if "__" in sort:
-            column_name, direction = sort.split("__")
+        if self.operator_separator in sort:
+            column_name, direction = sort.split(self.operator_separator)
         else:
             column_name, direction = sort, "asc"
 
@@ -340,7 +348,7 @@ class MuckApiView(MethodView):
             elif direction == "desc":
                 order_by = column.desc()
             else:
-                raise MuckApiValidationException(
+                raise BadRequest(
                     f"Invalid sort direction: {direction}. Must asc or desc"
                 )
         return order_by, join_models
@@ -368,24 +376,31 @@ class MuckApiView(MethodView):
         """Adds CRUD endpoints to a blueprint."""
         url_rule = get_url_rule(cls, None)
         api_view = cls.as_view(f"{cls.api_name}_api")
+
+        # In the special case that this API represents a ONE-TO-ONE relationship, use / for all methods.
         if cls.one_to_one_api:
             blueprint.add_url_rule(
                 url_rule,
                 defaults={"resource_id": None},
                 view_func=api_view,
-                methods=cls.allowed_methods,
+                methods={"GET", "PUT", "PATCH", "DELETE"},
             )
-        if "POST" in cls.allowed_methods:
+
+        else:
+            # Create endpoint - POST on /
             blueprint.add_url_rule(url_rule, view_func=api_view, methods=["POST"])
-        if "GET" in cls.allowed_methods:
+
+            # List endpoint - GET on /
             blueprint.add_url_rule(
                 url_rule,
                 defaults={"resource_id": None},
                 view_func=api_view,
                 methods=["GET"],
             )
-        blueprint.add_url_rule(
-            f"{url_rule}/<resource_id>",
-            view_func=api_view,
-            methods=cls.allowed_methods.intersection({"GET", "PUT", "PATCH", "DELETE"}),
-        )
+
+            # Detail, Update, Patch, Delete endpoints - GET, PUT, PATCH, DELETE on /<resource_id>
+            blueprint.add_url_rule(
+                f"{url_rule}/<resource_id>",
+                view_func=api_view,
+                methods={"GET", "PUT", "PATCH", "DELETE"},
+            )

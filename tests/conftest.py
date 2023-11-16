@@ -115,12 +115,16 @@ def simpson_family(db):
 @pytest.fixture
 def belcher_family(db):
     bob = GuardianModel(name="Bob", age=46)
+    db.session.add(bob)
+    db.session.flush()
     tina = ChildModel(name="Tina", age=12, guardian_id=bob.id)
     louise = ChildModel(name="Louise", age=9, guardian_id=bob.id)
     gene = ChildModel(name="Gene", age=11, guardian_id=bob.id)
+    db.session.add_all([tina, louise, gene])
+    db.session.flush()
     pony = ToyModel(name="Pony", child_id=tina.id)
     hat = ToyModel(name="Hat", child_id=louise.id)
     keyboard = ToyModel(name="Keyboard", child_id=gene.id)
-    db.session.add_all([bob, tina, louise, gene, pony, hat, keyboard])
+    db.session.add_all([pony, hat, keyboard])
     db.session.flush()
     return bob, tina, louise, gene, pony, hat, keyboard

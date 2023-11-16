@@ -10,7 +10,7 @@ from flask_login import (
 )
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields as mf
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, Mapped
 
 from flask_muck.views import MuckApiView
 
@@ -37,6 +37,7 @@ class GuardianModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     age = db.Column(db.Integer, nullable=True)
+    children: Mapped[list["ChildModel"]] = db.relationship()
 
 
 class ChildModel(db.Model):
@@ -44,12 +45,15 @@ class ChildModel(db.Model):
     name = db.Column(db.String, nullable=False)
     age = db.Column(db.Integer, nullable=True)
     guardian_id = db.Column(db.Integer, db.ForeignKey(GuardianModel.id))
+    guardian = db.relationship(GuardianModel, back_populates="children")
+    toys: Mapped[list["ToyModel"]] = db.relationship()
 
 
 class ToyModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     child_id = db.Column(db.Integer, db.ForeignKey(ChildModel.id))
+    child = db.relationship(ChildModel, back_populates="toys")
 
 
 class GuardianSchema(ma.Schema):
