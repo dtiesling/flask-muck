@@ -44,6 +44,7 @@ pytest = "^7.4.3"
 flask-login = "^0.6.3"
 flask-sqlalchemy = "^3.1.1"
 coverage = "^7.3.2"
+pytest-cov = "^4.1.0"
 
 [tool.mypy]
 packages = "flask_muck"
@@ -55,3 +56,9 @@ disallow_any_generics = false
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test*.py"
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+fail_under = 100
