@@ -16,5 +16,6 @@ jobs:
       - run: pip install poetry
       - run: poetry install --with dev
       - run: poetry run mypy flask_muck/
+      - run: poetry run pytest
 
 
