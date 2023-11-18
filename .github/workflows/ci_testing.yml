@@ -12,8 +12,8 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: 3.9
-      - run: pip install poetry mypy
+      - run: pip install poetry
       - run: poetry install --with dev
-      - run: mypy flask_muck/
+      - run: poetry run mypy flask_muck/
 
 
