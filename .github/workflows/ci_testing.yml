@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: 3.8
       - run: pip install poetry
-      - run: poetry install
+      - run: poetry install -with dev
       - run: mypy flask_muck/
 
 

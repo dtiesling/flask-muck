@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from flask_muck.views import MuckApiView
 
 
-def get_url_rule(muck_view: type[MuckApiView], append_rule: Optional[str]):
+def get_url_rule(muck_view: type[MuckApiView], append_rule: Optional[str]) -> str:
     """Recursively build the url rule for a MuckApiView by looking at its parent if it exists."""
     rule = muck_view.api_name
     if append_rule:
