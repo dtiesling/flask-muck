@@ -4,11 +4,15 @@ on:
   release:
     types:
       - created
+env:
+  HATCH_INDEX_AUTH: ${{ secrets.HATCH_INDEX_AUTH }}
+  HATCH_INDEX_USER: ${{ secrets.HATCH_INDEX_USER }}
 
 jobs:
   publish:
     name: Pypi Publish
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v1
