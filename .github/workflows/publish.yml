@@ -32,6 +32,6 @@ jobs:
           git checkout -b origin/main
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add src/flask_much/__init__.py
+          git add src/flask_muck/__init__.py
           git commit -m "Update version number to $RELEASE_NAME."
           git push
