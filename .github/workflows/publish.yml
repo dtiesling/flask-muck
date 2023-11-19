@@ -10,9 +10,6 @@ jobs:
   publish:
     name: Pypi Publish
     runs-on: ubuntu-latest
-    env:
-      HATCH_INDEX_AUTH: ${{ secrets.HATCH_INDEX_AUTH }}
-      HATCH_INDEX_USER: ${{ secrets.HATCH_INDEX_USER }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v1
@@ -26,7 +23,7 @@ jobs:
         run: |
           hatch version $RELEASE_NAME
           hatch build
-          hatch publish -r test -n
+          hatch publish -r test -n -u ${{ secrets.HATCH_INDEX_AUTH }} -a ${{ secrets.HATCH_INDEX_USER }}
       - name: Commit new version
         run: |
           git checkout main
