@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling", "Flask", "sqlalchemy"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "flask_muck"
-version = "0.0.1"
+name = "Flask-Muck"
+dynamic = ["version"]
 authors = [
   { name="Daniel Tiesling", email="tiesling@gmail.com" },
 ]
@@ -21,6 +21,18 @@ classifiers = [
 "Homepage" = "https://github.com/dtiesling/flask-muck"
 
 [tool]
+[tool.hatch.version]
+path = "src/flask_muck/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/examples",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/flask_muck"]
+
 [tool.poetry]
 name = "flask-muck"
 description = "Batteries included framework for generating RESTful apis using Flask and SqlAlchemy."
@@ -47,7 +59,7 @@ coverage = "^7.3.2"
 pytest-cov = "^4.1.0"
 
 [tool.mypy]
-packages = "flask_muck"
+packages = "src"
 strict = true
 disallow_untyped_calls = false
 warn_return_any = false
@@ -56,6 +68,7 @@ disallow_any_generics = false
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test*.py"
+pythonpath = ["src"]
 
 [tool.coverage.run]
 branch = true

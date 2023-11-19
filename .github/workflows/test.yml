@@ -15,7 +15,7 @@ jobs:
           python-version: 3.9
       - run: pip install poetry
       - run: poetry install --with dev
-      - run: poetry run mypy flask_muck/
+      - run: poetry run mypy src/
       - run: poetry run pytest --cov=flask_muck
 
 
