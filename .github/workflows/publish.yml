@@ -30,8 +30,11 @@ jobs:
       - name: Checkout Main
         run: |
           git fetch
+          git stash
           git checkout main
+          git stash apply
       - name: Add & Commit
         uses: EndBug/add-and-commit@v9.1.3
         with:
           add: 'src/flask_muck/__init__.py'
+
