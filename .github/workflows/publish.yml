@@ -34,4 +34,4 @@ jobs:
           git config --local user.name "GitHub Action"
           git add src/flask_muck/__init__.py
           git commit -m "Update version number to $RELEASE_NAME."
-          git push
+          git push --set-upstream origin origin/main
