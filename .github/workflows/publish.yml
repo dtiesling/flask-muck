@@ -23,7 +23,7 @@ jobs:
         run: |
           hatch version $RELEASE_NAME
           hatch build
-          hatch publish -r test -n --user __token__ -a ${{ secrets.HATCH_INDEX_USER }}
+          hatch publish -r test --user __token__ -a ${{ secrets.HATCH_INDEX_AUTH }}
       - name: Commit new version
         run: |
           git checkout main
