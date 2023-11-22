@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from json import JSONDecodeError
 from logging import getLogger
 from typing import Optional, Union, Any
@@ -112,9 +113,7 @@ class MuckApiView(MethodView):
             getattr(cls.Model, cls.primary_key_column) == resource_id
         ).one()
 
-    def _get_clean_filter_data(self, filters: Optional[str]) -> JsonDict:
-        if not filters:
-            return {}
+    def _get_clean_filter_data(self, filters: str) -> JsonDict:
         try:
             return json.loads(filters)
         except JSONDecodeError:
@@ -133,7 +132,9 @@ class MuckApiView(MethodView):
         schema = schema_method_map[request.method]
         if not schema:
             raise NotImplementedError
-        return schema.load(request.json or {})
+        kwargs = schema.load(request.json or {})
+        kwargs.update(self.get_base_query_kwargs())
+        return kwargs
 
     @parser.use_kwargs(
         {
@@ -214,6 +215,7 @@ class MuckApiView(MethodView):
 
         resource = self.Model(**kwargs)
         self.session.add(resource)
+        self.session.flush()
         return resource
 
     def _update_resource(self, resource: SqlaModel, kwargs: JsonDict) -> SqlaModel:
@@ -238,7 +240,7 @@ class MuckApiView(MethodView):
         self._execute_callbacks(resource, kwargs, CallbackType.post)
         return self.ResponseSchema().dump(resource), 201
 
-    def put(self, resource_id: ResourceId) -> tuple[JsonDict, int]:
+    def put(self, resource_id: ResourceId, **kwargs) -> tuple[JsonDict, int]:
         if not self.UpdateSchema:
             raise NotImplementedError()
         resource = self._get_resource(resource_id)
@@ -249,7 +251,7 @@ class MuckApiView(MethodView):
         self._execute_callbacks(resource, kwargs, CallbackType.post)
         return self.ResponseSchema().dump(resource), 200
 
-    def patch(self, resource_id: ResourceId) -> tuple[JsonDict, int]:
+    def patch(self, resource_id: ResourceId, **kwargs) -> tuple[JsonDict, int]:
         if not self.PatchSchema:
             raise NotImplementedError()
         resource = self._get_resource(resource_id)
@@ -260,7 +262,7 @@ class MuckApiView(MethodView):
         self._execute_callbacks(resource, kwargs, CallbackType.post)
         return self.ResponseSchema().dump(resource), 200
 
-    def delete(self, resource_id: ResourceId) -> tuple[str, int]:
+    def delete(self, resource_id: ResourceId, **kwargs) -> tuple[str, int]:
         resource = self._get_resource(resource_id)
         kwargs = {}
         if self.DeleteSchema:
@@ -293,31 +295,31 @@ class MuckApiView(MethodView):
                     raise BadRequest(
                         f"{column_name} is not a valid filter field. The relationship does not exist."
                     )
-                SqlaModel = field.property.mapper.class_
-                join_models.add(SqlaModel)
+                _Model = field.property.mapper.class_
+                join_models.add(_Model)
             else:
-                SqlaModel = self.Model
+                _Model = self.Model
 
-            if not (column := getattr(SqlaModel, column_name, None)):
+            if not (column := getattr(_Model, column_name, None)):
                 raise BadRequest(f"{column_name} is not a valid filter field.")
 
             if operator == "gt":
-                filter = column > value
+                _filter = column > value
             elif operator == "gte":
-                filter = column >= value
+                _filter = column >= value
             elif operator == "lt":
-                filter = column < value
+                _filter = column < value
             elif operator == "lte":
-                filter = column <= value
+                _filter = column <= value
             elif operator == "ne":
-                filter = column != value
+                _filter = column != value
             elif operator == "in":
-                filter = column.in_(value)
+                _filter = column.in_(value)
             elif operator == "not_in":
-                filter = column.not_in(value)
+                _filter = column.not_in(value)
             else:
-                filter = column == value
-            query_filters.append(filter)
+                _filter = column == value
+            query_filters.append(_filter)
         return query_filters, join_models
 
     def _get_query_order_by(
@@ -332,17 +334,17 @@ class MuckApiView(MethodView):
         join_models = set()
         if "." in column_name:
             relationship_name, column_name = column_name.split(".")
-            field = getattr(self.Model, relationship_name)
+            field = getattr(self.Model, relationship_name, None)
             if not field:
-                return None, set()
-            Model = field.property.mapper.class_
-            join_models.add(Model)
+                raise BadRequest(f"{column_name} is not a valid sort field.")
+            _Model = field.property.mapper.class_
+            join_models.add(_Model)
         else:
-            Model = self.Model
+            _Model = self.Model
 
         order_by = None
-        if hasattr(Model, column_name):
-            column = getattr(Model, column_name)
+        if hasattr(_Model, column_name):
+            column = getattr(_Model, column_name)
             if direction == "asc":
                 order_by = column.asc()
             elif direction == "desc":
@@ -351,6 +353,8 @@ class MuckApiView(MethodView):
                 raise BadRequest(
                     f"Invalid sort direction: {direction}. Must asc or desc"
                 )
+        else:
+            raise BadRequest(f"{column_name} is not a valid sort field.")
         return order_by, join_models
 
     def _get_query_search_filter(
@@ -358,18 +362,16 @@ class MuckApiView(MethodView):
     ) -> tuple[Optional[BooleanClauseList], set[SqlaModelType]]:
         """Returns SQLA full text search filters for the search_term provided."""
         if not self.searchable_columns:
-            return None, set()
+            raise BadRequest("Search is not supported on this endpoint.")
         searches = []
         join_models = set()
         for column in self.searchable_columns:
             join_models.add(column.parent.class_)
             searches.append(column.ilike(f"%{search_string}%"))
-        if len(searches) > 1:
-            return or_(*searches), join_models
-        elif len(searches) == 1:
+        if len(searches) == 1:
             return searches[0], join_models
         else:
-            return None, join_models
+            return or_(*searches), join_models
 
     @classmethod
     def add_crud_to_blueprint(cls, blueprint: Blueprint) -> None:
@@ -400,7 +402,7 @@ class MuckApiView(MethodView):
 
             # Detail, Update, Patch, Delete endpoints - GET, PUT, PATCH, DELETE on /<resource_id>
             blueprint.add_url_rule(
-                f"{url_rule}/<resource_id>",
+                f"{url_rule}/<{cls.primary_key_type.__name__}:resource_id>/",
                 view_func=api_view,
                 methods={"GET", "PUT", "PATCH", "DELETE"},
             )

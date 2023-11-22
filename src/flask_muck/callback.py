@@ -16,4 +16,4 @@ class MuckCallback(ABC):
 
     @abstractmethod
     def execute(self) -> None:
-        pass
+        ...

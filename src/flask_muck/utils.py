@@ -33,7 +33,10 @@ def get_fk_column(
             for fk in column.foreign_keys:
                 if fk.column.table == parent_model.__table__:
                     return column
-    return None
+    raise MuckImplementationError(
+        f"The {child_model.__name__} model does not have a foreign key to the {parent_model.__name__} model. "
+        f"Your MuckApiView parents are not configured correctly."
+    )
 
 
 def get_query_filters_from_request_path(
@@ -46,10 +49,6 @@ def get_query_filters_from_request_path(
         child_model = view.Model
         parent_model = view.parent.Model
         fk_column = get_fk_column(parent_model, child_model)
-        if fk_column is None:
-            raise MuckImplementationError(
-                f"The model associated with {view} does not have a foreign key to its parent model."
-            )
         query_filters.append(
             fk_column == request.view_args[f"{view.parent.api_name}_id"]
         )

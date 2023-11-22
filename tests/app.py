@@ -12,6 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields as mf
 from sqlalchemy.orm import DeclarativeBase, Mapped
 
+from flask_muck import MuckCallback
 from flask_muck.views import MuckApiView
 
 
@@ -33,10 +34,17 @@ class UserModel(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
 
+class FamilyModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    surname = db.Column(db.String, nullable=False)
+
+
 class GuardianModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String, nullable=False)
+    name = db.Column(db.String, nullable=False, unique=True)
     age = db.Column(db.Integer, nullable=True)
+    family_id = db.Column(db.Integer, db.ForeignKey(FamilyModel.id))
+    family = db.relationship(FamilyModel)
     children: Mapped[list["ChildModel"]] = db.relationship()
 
 
@@ -44,16 +52,18 @@ class ChildModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     age = db.Column(db.Integer, nullable=True)
+    family_id = db.Column(db.Integer, db.ForeignKey(FamilyModel.id))
     guardian_id = db.Column(db.Integer, db.ForeignKey(GuardianModel.id))
     guardian = db.relationship(GuardianModel, back_populates="children")
-    toys: Mapped[list["ToyModel"]] = db.relationship()
+    toy: Mapped["ToyModel"] = db.relationship(uselist=False)
 
 
 class ToyModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
+    family_id = db.Column(db.Integer, db.ForeignKey(FamilyModel.id))
     child_id = db.Column(db.Integer, db.ForeignKey(ChildModel.id))
-    child = db.relationship(ChildModel, back_populates="toys")
+    child = db.relationship(ChildModel, back_populates="toy")
 
 
 class GuardianSchema(ma.Schema):
@@ -65,12 +75,17 @@ class ChildSchema(ma.Schema):
     guardian_id = mf.Integer(required=True, load_only=True)
 
 
+class GuardianDetailSchema(ma.Schema):
+    name = mf.String(required=True)
+    children = mf.Nested(ChildSchema, many=True)
+
+
 class ToySchema(ma.Schema):
     name = mf.String(required=True)
     child_id = mf.Integer(required=True, load_only=True)
 
 
-api_blueprint = Blueprint("v1_api", __name__, url_prefix="/api/v1/")
+api_blueprint = Blueprint("api", __name__, url_prefix="/")
 
 
 @login_manager.user_loader
@@ -95,6 +110,16 @@ def logout_view():
 
 
 # Add Muck views to generate CRUD REST API.
+class PreCallback(MuckCallback):
+    def execute(self) -> None:
+        return
+
+
+class PostCallback(MuckCallback):
+    def execute(self) -> None:
+        return
+
+
 class BaseApiView(MuckApiView):
     """Base view to inherit from. Helpful for setting class variables shared with all API views such as "sqlalchemy_db"
     and "decorators".
@@ -102,6 +127,14 @@ class BaseApiView(MuckApiView):
 
     session = db.session
     decorators = [login_required]
+    pre_create_callbacks = [PreCallback]
+    pre_update_callbacks = [PreCallback]
+    pre_patch_callbacks = [PreCallback]
+    pre_delete_callbacks = [PreCallback]
+    post_create_callbacks = [PostCallback]
+    post_update_callbacks = [PostCallback]
+    post_patch_callbacks = [PostCallback]
+    post_delete_callbacks = [PostCallback]
 
 
 class GuardianApiView(BaseApiView):
@@ -111,7 +144,8 @@ class GuardianApiView(BaseApiView):
     CreateSchema = GuardianSchema
     PatchSchema = GuardianSchema
     UpdateSchema = GuardianSchema
-    searchable_columns = [GuardianModel.name]
+    DetailSchema = GuardianDetailSchema
+    searchable_columns = [GuardianModel.name, GuardianModel.age]
 
 
 class ChildApiView(BaseApiView):
@@ -126,14 +160,14 @@ class ChildApiView(BaseApiView):
 
 
 class ToyApiView(BaseApiView):
-    api_name = "toys"
+    api_name = "toy"
     Model = ToyModel
     ResponseSchema = ToySchema
     CreateSchema = ToySchema
     PatchSchema = ToySchema
     UpdateSchema = ToySchema
     parent = ChildApiView
-    searchable_columns = [ToyModel.name]
+    one_to_one_api = True
 
 
 # Add all url rules to the blueprint.
@@ -142,7 +176,7 @@ ChildApiView.add_crud_to_blueprint(api_blueprint)
 ToyApiView.add_crud_to_blueprint(api_blueprint)
 
 
-def create_app():
+def create_app() -> Flask:
     app = Flask(__name__)
     app.config["SECRET_KEY"] = "super-secret"
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///todo_example.db"

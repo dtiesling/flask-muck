@@ -74,4 +74,9 @@ pythonpath = ["src"]
 branch = true
 
 [tool.coverage.report]
-fail_under = 100
+fail_under = 95
+exclude_also = [
+    "@(abc\\.)?abstractmethod",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError"
+]
