@@ -240,7 +240,7 @@ class MuckApiView(MethodView):
         self._execute_callbacks(resource, kwargs, CallbackType.post)
         return self.ResponseSchema().dump(resource), 201
 
-    def put(self, resource_id: ResourceId, **kwargs) -> tuple[JsonDict, int]:
+    def put(self, resource_id: ResourceId, **kwargs: Any) -> tuple[JsonDict, int]:
         if not self.UpdateSchema:
             raise NotImplementedError()
         resource = self._get_resource(resource_id)
@@ -251,7 +251,7 @@ class MuckApiView(MethodView):
         self._execute_callbacks(resource, kwargs, CallbackType.post)
         return self.ResponseSchema().dump(resource), 200
 
-    def patch(self, resource_id: ResourceId, **kwargs) -> tuple[JsonDict, int]:
+    def patch(self, resource_id: ResourceId, **kwargs: Any) -> tuple[JsonDict, int]:
         if not self.PatchSchema:
             raise NotImplementedError()
         resource = self._get_resource(resource_id)
@@ -262,7 +262,7 @@ class MuckApiView(MethodView):
         self._execute_callbacks(resource, kwargs, CallbackType.post)
         return self.ResponseSchema().dump(resource), 200
 
-    def delete(self, resource_id: ResourceId, **kwargs) -> tuple[str, int]:
+    def delete(self, resource_id: ResourceId, **kwargs: Any) -> tuple[str, int]:
         resource = self._get_resource(resource_id)
         kwargs = {}
         if self.DeleteSchema:
