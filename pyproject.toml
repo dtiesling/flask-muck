@@ -1,0 +1,82 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "Flask-Muck"
+dynamic = ["version"]
+authors = [
+  { name="Daniel Tiesling", email="tiesling@gmail.com" },
+]
+description = "Batteries included framework for generating RESTful apis using Flask and SqlAlchemy."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/dtiesling/flask-muck"
+
+[tool]
+[tool.hatch.version]
+path = "src/flask_muck/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/examples",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/flask_muck"]
+
+[tool.poetry]
+name = "flask-muck"
+description = "Batteries included framework for generating RESTful apis using Flask and SqlAlchemy."
+version = "0.0.1"
+authors = ["Daniel Tiesling <tiesling@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Flask = "^2.0.0"
+sqlalchemy = "^2.0.23"
+webargs = "^8.3.0"
+types-requests = "^2.31.0.10"
+marshmallow = "^3.20.1"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.6.1"
+types-flask = "^1.1.6"
+types-requests = "^2.31.0.10"
+sqlalchemy-stubs = "^0.4"
+pytest = "^7.4.3"
+flask-login = "^0.6.3"
+flask-sqlalchemy = "^3.1.1"
+coverage = "^7.3.2"
+pytest-cov = "^4.1.0"
+
+[tool.mypy]
+packages = "src"
+strict = true
+disallow_untyped_calls = false
+warn_return_any = false
+disallow_any_generics = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test*.py"
+pythonpath = ["src"]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+fail_under = 95
+exclude_also = [
+    "@(abc\\.)?abstractmethod",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError"
+]

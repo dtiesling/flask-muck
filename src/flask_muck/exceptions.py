@@ -1,0 +1,2 @@
+class MuckImplementationError(Exception):
+    pass
