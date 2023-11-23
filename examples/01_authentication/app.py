@@ -93,6 +93,7 @@ class BaseApiView(MuckApiView):
 class TodoApiView(BaseApiView):
     """ToDo API view that provides all RESTful CRUD operations."""
 
+    api_name = "todos"
     Model = TodoModel
     ResponseSchema = TodoSchema
     CreateSchema = TodoSchema
@@ -102,7 +103,7 @@ class TodoApiView(BaseApiView):
 
 
 # Add all url rules to the blueprint.
-TodoApiView.add_crud_to_blueprint(api_blueprint, url_prefix="todos")
+TodoApiView.add_crud_to_blueprint(api_blueprint)
 
 # Register api blueprint with the app.
 app.register_blueprint(api_blueprint)

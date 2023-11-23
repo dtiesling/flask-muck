@@ -10,7 +10,6 @@ pipenv = "*"
 install = "*"
 marshmallow = "*"
 flask-muck = {file = "../.."}
-flask-login = "*"
 webargs = "*"
 
 [dev-packages]

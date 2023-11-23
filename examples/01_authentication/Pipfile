@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+flask-sqlalchemy = "*"
+pipenv = "*"
+install = "*"
+marshmallow = "*"
+flask-muck = {file = "../../src/"}
+flask-login = "*"
+webargs = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
