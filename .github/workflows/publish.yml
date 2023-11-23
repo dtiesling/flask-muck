@@ -26,7 +26,7 @@ jobs:
         run: |
           hatch version $RELEASE_NAME
           hatch build
-          hatch publish -r test -n
+          hatch publish -n
       - name: Checkout Main
         run: |
           git fetch
