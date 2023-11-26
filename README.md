@@ -6,7 +6,7 @@
 
 # Flask-Muck
 
-![Logo](./docs/docs/img/logo.png)
+![Logo](https://dtiesling.github.io/flask-muck/img/logo.png)
 
 Flask-Muck is a batteries-included framework for automatically generating RESTful APIs with Create, Read, 
 Update and Delete (CRUD) endpoints in a Flask/SqlAlchemy application stack. 
