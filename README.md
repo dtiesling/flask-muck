@@ -1,7 +1,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![CI Testing](https://github.com/dtiesling/flask-muck/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/dtiesling/flask-muck/actions/workflows/test.yml)
 
-# flask-muck
+# Flask-Muck (Beta)
 
 ![Logo](./docs/docs/img/logo.png)
 
@@ -28,6 +28,7 @@ class MyModelSchema(ma.Schema):
 
 class MyModelApiView(MuckApiView):
     api_name = "my-model"
+    session = db.session
     Model = MyModel
     ResponseSchema = MyModel
     CreateSchema = MyModel
@@ -53,9 +54,17 @@ MyModelApiView.add_crud_to_blueprint(blueprint)
 
 ## Install
 
+Flask-Muck is in Beta and does not have a production available for install yet. A standard production release on PyPi
+is coming soon.
+
 `pip install flask-muck`
 
 Flask-Muck supports Python >= 3.9
+
+## Issues
+
+Submit any issues you may encounter on [Github](https://github.com/dtiesling/flask-muck/issues). Please search for 
+similar issues before submitting a new one.
 
 ## Documentation
 
