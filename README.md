@@ -2,6 +2,9 @@
 [![CI Testing](https://github.com/dtiesling/flask-muck/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/dtiesling/flask-muck/actions/workflows/test.yml)
 
 # flask-muck
+
+![Logo](./docs/docs/img/logo.png)
+
 Flask-Muck is a batteries-included framework for automatically generating RESTful APIs with Create, Read, 
 Update and Delete (CRUD) endpoints in a Flask/SqlAlchemy application stack. 
 

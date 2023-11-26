@@ -57,7 +57,7 @@ flask-login = "^0.6.3"
 flask-sqlalchemy = "^3.1.1"
 coverage = "^7.3.2"
 pytest-cov = "^4.1.0"
-sphinx = "^7.2.6"
+mkdocs-material = "^9.4.11"
 
 [tool.mypy]
 packages = "src"
