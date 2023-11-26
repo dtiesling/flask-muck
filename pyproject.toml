@@ -19,6 +19,8 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/dtiesling/flask-muck"
+"Repository" = "https://github.com/dtiesling/flask-muck"
+"Documentation" = "https://dtiesling.github.io/flask-muck/"
 
 [tool]
 [tool.hatch.version]

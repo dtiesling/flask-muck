@@ -24,22 +24,22 @@ class MyModel(db.Model):
 
 class MyModelSchema(ma.Schema):
     id = mf.Integer(dump_only=True)
-    name = mf.String(required=True)
+    name = mf.String()
 
 class MyModelApiView(MuckApiView):
     api_name = "my-model"
     session = db.session
     Model = MyModel
-    ResponseSchema = MyModel
-    CreateSchema = MyModel
-    PatchSchema = MyModel
-    UpdateSchema = MyModel
+    ResponseSchema = MyModelSchema
+    CreateSchema = MyModelSchema
+    PatchSchema = MyModelSchema
+    UpdateSchema = MyModelSchema
     searchable_columns = [MyModel.name]
 
 blueprint = Blueprint("api", __name__, url_prefix="/api/")
 MyModelApiView.add_crud_to_blueprint(blueprint)
 
-# Available Endpoint
+# Available Endpoints:
 # CREATE             | curl -X POST "/api/v1/my-model" -H "Content-Type: application/json" \-d "{\"name\": \"Ayla\"}"
 # LIST ALL           | curl -X GET "/api/v1/my-model" -d "Accept: application/json"
 # LIST ALL PAGINATED | curl -X GET "/api/v1/my-model?limit=100&offset=50" -d "Accept: application/json"
@@ -52,10 +52,17 @@ MyModelApiView.add_crud_to_blueprint(blueprint)
 # DELETE             | curl -X DELETE "/api/v1/my-model/1"
 ```
 
+## Features
+- Automatic generation of CRUD endpoints.
+- Built-in search, filter, sort and pagination when listing resources.
+- Support for APIs with nested resources (i.e. /api/classrooms/12345/students).
+- Fully compatible with any other Flask method-based or class-based views. Mix & match with your existing views.
+- Pre and post callbacks configurable on all manipulation endpoints. Allow for adding arbitrary logic before and after Create, Update or Delete operations.
+
+
 ## Install
 
-Flask-Muck is in Beta and does not have a production available for install yet. A standard production release on PyPi
-is coming soon.
+Flask-Muck is in Beta and does not have a standard version available for install yet. A standard release on PyPi is coming soon.
 
 `pip install flask-muck`
 
@@ -63,14 +70,14 @@ Flask-Muck supports Python >= 3.9
 
 ## Issues
 
-Submit any issues you may encounter on [Github](https://github.com/dtiesling/flask-muck/issues). Please search for 
+Submit any issues you may encounter on [GitHub](https://github.com/dtiesling/flask-muck/issues). Please search for 
 similar issues before submitting a new one.
 
 ## Documentation
 
 Refer to the [examples](./examples) directory for more information on usage and available features.
 
-Full documentation is coming soon. 
+Full documentation is a work-in-progress but will be completed soon. It can be found [here](https://dtiesling.github.io/flask-muck/). 
 
 ## License
 
