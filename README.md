@@ -11,25 +11,28 @@
 Flask-Muck is a batteries-included framework for automatically generating RESTful APIs with Create, Read, 
 Update and Delete (CRUD) endpoints in a Flask/SqlAlchemy application stack. 
 
-With Flask-Muck you don't have to worry about the CRUD. 
+With Flask-Muck you don't have to worry about the CRUD.
 
 ```python
 from flask import Blueprint
-from flask_muck.views import MuckApiView
+from flask_muck.views import FlaskMuckApiView
 import marshmallow as ma
 from marshmallow import fields as mf
 
 from myapp import db
 
+
 class MyModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String, nullable=False)
+
 
 class MyModelSchema(ma.Schema):
     id = mf.Integer(dump_only=True)
     name = mf.String()
 
-class MyModelApiView(MuckApiView):
+
+class MyModelApiView(FlaskMuckApiView):
     api_name = "my-model"
     session = db.session
     Model = MyModel
@@ -39,8 +42,9 @@ class MyModelApiView(MuckApiView):
     UpdateSchema = MyModelSchema
     searchable_columns = [MyModel.name]
 
+
 blueprint = Blueprint("api", __name__, url_prefix="/api/")
-MyModelApiView.add_crud_to_blueprint(blueprint)
+MyModelApiView.add_rules_to_blueprint(blueprint)
 
 # Available Endpoints:
 # CREATE             | curl -X POST "/api/v1/my-model" -H "Content-Type: application/json" \-d "{\"name\": \"Ayla\"}"

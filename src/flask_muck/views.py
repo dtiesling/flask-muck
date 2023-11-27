@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-from copy import deepcopy
 from json import JSONDecodeError
 from logging import getLogger
 from typing import Optional, Union, Any
@@ -11,7 +10,7 @@ from flask.typing import ResponseReturnValue
 from flask.views import MethodView
 from marshmallow import Schema
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session, Query
+from sqlalchemy.orm import Query, scoped_session
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.elements import (
     BinaryExpression,
@@ -41,8 +40,8 @@ METHOD_OPERATION_MAP = {
 }
 
 
-class MuckApiView(MethodView):
-    session: Session
+class FlaskMuckApiView(MethodView):
+    session: scoped_session
     api_name: str
     Model: SqlaModelType
 
@@ -64,7 +63,7 @@ class MuckApiView(MethodView):
     post_delete_callbacks: list[type[MuckCallback]] = []
 
     searchable_columns: Optional[list[InstrumentedAttribute]] = None
-    parent: Optional[type[MuckApiView]] = None
+    parent: Optional[type[FlaskMuckApiView]] = None
     default_pagination_limit: int = 20
     one_to_one_api: bool = False
     allowed_methods: set[str] = {"GET", "POST", "PUT", "PATCH", "DELETE"}
@@ -374,7 +373,7 @@ class MuckApiView(MethodView):
             return or_(*searches), join_models
 
     @classmethod
-    def add_crud_to_blueprint(cls, blueprint: Blueprint) -> None:
+    def add_rules_to_blueprint(cls, blueprint: Blueprint) -> None:
         """Adds CRUD endpoints to a blueprint."""
         url_rule = get_url_rule(cls, None)
         api_view = cls.as_view(f"{cls.api_name}_api")

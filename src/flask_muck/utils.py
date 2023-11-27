@@ -8,10 +8,10 @@ from flask_muck.exceptions import MuckImplementationError
 from flask_muck.types import SqlaModelType
 
 if TYPE_CHECKING:
-    from flask_muck.views import MuckApiView
+    from flask_muck.views import FlaskMuckApiView
 
 
-def get_url_rule(muck_view: type[MuckApiView], append_rule: Optional[str]) -> str:
+def get_url_rule(muck_view: type[FlaskMuckApiView], append_rule: Optional[str]) -> str:
     """Recursively build the url rule for a MuckApiView by looking at its parent if it exists."""
     rule = muck_view.api_name
     if append_rule:
@@ -40,7 +40,7 @@ def get_fk_column(
 
 
 def get_query_filters_from_request_path(
-    view: Union[type[MuckApiView], MuckApiView], query_filters: list
+    view: Union[type[FlaskMuckApiView], FlaskMuckApiView], query_filters: list
 ) -> list:
     """Recursively builds query kwargs from the request path based on nested MuckApiViews. If the view has no parent
     then nothing is done and original query_kwargs are returned.
@@ -57,7 +57,8 @@ def get_query_filters_from_request_path(
 
 
 def get_join_models_from_parent_views(
-    view: Union[type[MuckApiView], MuckApiView], join_models: list[SqlaModelType]
+    view: Union[type[FlaskMuckApiView], FlaskMuckApiView],
+    join_models: list[SqlaModelType],
 ) -> list[SqlaModelType]:
     """Recursively builds a list of models that need to be joined in queries based on the view's parents.."""
     if view.parent:

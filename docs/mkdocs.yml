@@ -35,5 +35,6 @@ extra_css:
   - stylesheets/extra.css
 
 nav:
-  - Home: index.md
+  - About: index.md
   - Installation: installation.md
+  - Quick Start: quickstart.md
