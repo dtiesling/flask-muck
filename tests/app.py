@@ -13,7 +13,7 @@ from marshmallow import fields as mf
 from sqlalchemy.orm import DeclarativeBase, Mapped
 
 from flask_muck import MuckCallback
-from flask_muck.views import MuckApiView
+from flask_muck.views import FlaskMuckApiView
 
 
 login_manager = LoginManager()
@@ -120,7 +120,7 @@ class PostCallback(MuckCallback):
         return
 
 
-class BaseApiView(MuckApiView):
+class BaseApiView(FlaskMuckApiView):
     """Base view to inherit from. Helpful for setting class variables shared with all API views such as "sqlalchemy_db"
     and "decorators".
     """
@@ -171,9 +171,9 @@ class ToyApiView(BaseApiView):
 
 
 # Add all url rules to the blueprint.
-GuardianApiView.add_crud_to_blueprint(api_blueprint)
-ChildApiView.add_crud_to_blueprint(api_blueprint)
-ToyApiView.add_crud_to_blueprint(api_blueprint)
+GuardianApiView.add_rules_to_blueprint(api_blueprint)
+ChildApiView.add_rules_to_blueprint(api_blueprint)
+ToyApiView.add_rules_to_blueprint(api_blueprint)
 
 
 def create_app() -> Flask:

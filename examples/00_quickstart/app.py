@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields as mf
 from sqlalchemy.orm import DeclarativeBase
 
-from flask_muck.views import MuckApiView
+from flask_muck.views import FlaskMuckApiView
 
 # Create a Flask app
 app = Flask(__name__)
@@ -42,7 +42,7 @@ api_blueprint = Blueprint("v1_api", __name__, url_prefix="/api/v1/")
 
 
 # Add Muck views to generate CRUD REST API.
-class BaseApiView(MuckApiView):
+class BaseApiView(FlaskMuckApiView):
     """Base view to inherit from. Helpful for setting class variables shared with all API views such as "session"
     and "decorators".
     """
@@ -63,7 +63,7 @@ class TodoApiView(BaseApiView):
 
 
 # Add all url rules to the blueprint.
-TodoApiView.add_crud_to_blueprint(api_blueprint)
+TodoApiView.add_rules_to_blueprint(api_blueprint)
 
 # Register api blueprint with the app.
 app.register_blueprint(api_blueprint)
