@@ -75,16 +75,19 @@ Flask-Muck is in Beta and does not have a standard version available for install
 
 Flask-Muck supports Python >= 3.9
 
-## Issues
-
-Submit any issues you may encounter on [GitHub](https://github.com/dtiesling/flask-muck/issues). Please search for 
-similar issues before submitting a new one.
-
 ## Documentation
 
 Refer to the [examples](./examples) directory for more information on usage and available features.
 
 Full documentation is a work-in-progress but will be completed soon. It can be found [here](https://dtiesling.github.io/flask-muck/). 
+
+## Issues
+
+Submit any issues you may encounter on [GitHub](https://github.com/dtiesling/flask-muck/issues). Please search for 
+similar issues before submitting a new one.
+
+## Support
+Post any questions you have as a [GitHub issue](https://github.com/dtiesling/flask-muck/issues) and add the "question" label.
 
 ## License
 
