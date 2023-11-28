@@ -6,7 +6,7 @@
 [![types - Mypy](https://img.shields.io/badge/types-Mypy-blue.svg)](https://github.com/python/mypy)
 [![License - MIT](https://img.shields.io/badge/license-MIT-9400d3.svg)](https://spdx.org/licenses/)
 
-
+With Flask-Muck you don't have to worry about the CRUD.
 
 Flask-Muck is a batteries-included framework for automatically generating RESTful APIs with Create, Read, 
 Update and Delete (CRUD) endpoints in a Flask/SqlAlchemy application stack. 
