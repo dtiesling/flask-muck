@@ -41,7 +41,8 @@ class BaseApiView(FlaskMuckApiView):
     decorators = [login_required]
 ```
 
-NOTE: For the remainder of this guide we'll assume the usage of the [Flask-SqlAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/quickstart/#quick-start) extension.
+!!! note
+    For the remainder of this guide we'll assume usage of the [Flask-SqlAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/quickstart/#quick-start) extension.
 
 ## Create SqlAlchemy Model
 Flask-Muck requires the use of SqlAlchemy's [declarative system](). If you are not using the declarative system you will
@@ -80,14 +81,22 @@ Inherit from the project's base api view class and define the required class var
 
 ```python
 class TeacherApiView(BaseApiView):
-    api_name = "teachers"  # Name used as the url endpoint in the REST API.
-    Model = Teacher  # Model class that will be queried and updated by this API.
-    ResponseSchema = TeacherSchema  # Marshmallow schema used to serialize and Teachers returned by the API.
-    CreateSchema = TeacherSchema  # Marshmallow schema used to validate payload data sent to the Create endpoint.
-    PatchSchema = TeacherSchema  # Marshmallow schema used to validate payload data sent to the Patch endpoint.
-    UpdateSchema = TeacherSchema  # Marshmallow schema used to validate payload data sent to the Update endpoint.
-    searchable_columns = [Teacher.name]  # List of model columns that can be searched when listing Teachers using the API.
+    api_name = "teachers" #(1)!
+    Model = Teacher #(2)!
+    ResponseSchema = TeacherSchema #(3)!
+    CreateSchema = TeacherSchema #(4)!
+    PatchSchema = TeacherSchema #(5)!
+    UpdateSchema = TeacherSchema #(6)!
+    searchable_columns = [Teacher.name] #(7)!
 ```
+
+1. Name used as the url endpoint in the REST API.
+2. Model class that will be queried and updated by this API.
+3. Marshmallow schema used to serialize and Teachers returned by the API.
+4. Marshmallow schema used to validate payload data sent to the Create endpoint.
+5. Marshmallow schema used to validate payload data sent to the Patch endpoint.
+6. Marshmallow schema used to validate payload data sent to the Update endpoint.
+7. List of model columns that can be searched when listing Teachers using the API.
 
 ## Add URL rules to a Flask Blueprint.
 The final step is to add the correct URL rules to an existing [Flask Blueprint](https://flask.palletsprojects.com/en/3.0.x/blueprints/) 
@@ -106,10 +115,10 @@ This produces the following views, a standard REST API!
 |----------------------|--------|----------------------------------------------------------------------------------------------------|
 | /api/teachers/       | GET    | List all teachers - querystring options available for sorting, filtering, searching and pagination |
 | /api/teachers/       | POST   | Create a teacher                                                                                   |
-| /api/teachers/\<ID>/ | GET    | Fetch a single teacher                                                                             |
-| /api/teachers/\<ID>/ | PUT    | Update a single teacher                                                                            |
-| /api/teachers/\<ID>/ | PATCH  | Patch a single teacher                                                                             |
-| /api/teachers/\<ID>/ | DELETE | Delete a single teacher                                                                            |
+| /api/teachers/<ID\>/ | GET    | Fetch a single teacher                                                                             |
+| /api/teachers/<ID\>/ | PUT    | Update a single teacher                                                                            |
+| /api/teachers/<ID\>/ | PATCH  | Patch a single teacher                                                                             |
+| /api/teachers/<ID\>/ | DELETE | Delete a single teacher                                                                            |
 
 
 

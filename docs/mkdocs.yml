@@ -1,7 +1,9 @@
 site_name: Flask-Muck Documentation
+repo_url: https://github.com/dtiesling/flask-muck
 theme:
   name: material
   logo: img/icon.png
+  favicon: img/favicon.png
   features:
     - navigation.instant
     - navigation.sections
@@ -9,6 +11,10 @@ theme:
     - navigation.path
     - toc.follow
     - navigation.top
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.annotate
   palette:
     - scheme: default
       primary: custom
@@ -24,17 +30,18 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
-
 plugins:
   - search
-
 markdown_extensions:
   - attr_list
-
+  - admonition
+  - abbr
+  - md_in_html
+  - pymdownx.superfences
 extra_css:
   - stylesheets/extra.css
-
 nav:
   - About: index.md
   - Installation: installation.md
   - Quick Start: quickstart.md
+  - Nesting APIs: nesting_apis.md

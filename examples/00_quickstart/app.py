@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields as mf
 from sqlalchemy.orm import DeclarativeBase
 
-from flask_muck.views import FlaskMuckApiView
+from flask_muck import FlaskMuckApiView
 
 # Create a Flask app
 app = Flask(__name__)

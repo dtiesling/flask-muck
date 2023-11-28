@@ -28,6 +28,8 @@ from flask_muck.types import SqlaModelType, JsonDict, ResourceId, SqlaModel
 from flask_muck.utils import (
     get_url_rule,
     get_query_filters_from_request_path,
+    get_pk_column,
+    get_pk_type,
 )
 
 logger = getLogger(__name__)
@@ -67,8 +69,6 @@ class FlaskMuckApiView(MethodView):
     default_pagination_limit: int = 20
     one_to_one_api: bool = False
     allowed_methods: set[str] = {"GET", "POST", "PUT", "PATCH", "DELETE"}
-    primary_key_column: str = "id"
-    primary_key_type: Union[type[int], type[str]] = int
     operator_separator: str = "__"
 
     @property
@@ -108,9 +108,7 @@ class FlaskMuckApiView(MethodView):
         query = cls._get_base_query()
         if cls.one_to_one_api:
             return query.one()
-        return query.filter(
-            getattr(cls.Model, cls.primary_key_column) == resource_id
-        ).one()
+        return query.filter(get_pk_column(cls.Model) == resource_id).one()
 
     def _get_clean_filter_data(self, filters: str) -> JsonDict:
         try:
@@ -401,7 +399,7 @@ class FlaskMuckApiView(MethodView):
 
             # Detail, Update, Patch, Delete endpoints - GET, PUT, PATCH, DELETE on /<resource_id>
             blueprint.add_url_rule(
-                f"{url_rule}/<{cls.primary_key_type.__name__}:resource_id>/",
+                f"{url_rule}/<{get_pk_type(cls.Model)}:resource_id>/",
                 view_func=api_view,
                 methods={"GET", "PUT", "PATCH", "DELETE"},
             )
