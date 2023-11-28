@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING, Union
+from typing import Optional, TYPE_CHECKING, Union, Literal
 
 from flask import request
 from sqlalchemy import Column, inspect
@@ -17,7 +17,7 @@ def get_url_rule(muck_view: type[FlaskMuckApiView], append_rule: Optional[str]) 
     if append_rule:
         rule = f"{rule}/{append_rule}"
     if muck_view.parent:
-        rule = f"<{muck_view.parent.primary_key_type.__name__}:{muck_view.parent.api_name}_id>/{rule}"
+        rule = f"<{get_pk_type(muck_view.parent.Model)}:{muck_view.parent.api_name}_id>/{rule}"
         return get_url_rule(muck_view.parent, rule)
     if not rule.endswith("/"):
         rule = rule + "/"
@@ -37,6 +37,20 @@ def get_fk_column(
         f"The {child_model.__name__} model does not have a foreign key to the {parent_model.__name__} model. "
         f"Your MuckApiView parents are not configured correctly."
     )
+
+
+def get_pk_column(model: SqlaModelType) -> Column:
+    """Returns the Primary Key column for a model."""
+    return model.__table__.primary_key.columns.values()[0]
+
+
+def get_pk_type(model: SqlaModelType) -> Literal["str", "int"]:
+    """Returns either "int" or "str" to describe the Primary Key type for a model. Used for building URL rules."""
+    pk_column = get_pk_column(model)
+    if issubclass(pk_column.type.python_type, (int, float)):
+        return "int"
+    else:
+        return "str"
 
 
 def get_query_filters_from_request_path(

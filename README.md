@@ -8,10 +8,12 @@
 
 ![Logo](https://dtiesling.github.io/flask-muck/img/logo.png)
 
+With Flask-Muck you don't have to worry about the CRUD.
+
 Flask-Muck is a batteries-included framework for automatically generating RESTful APIs with Create, Read, 
 Update and Delete (CRUD) endpoints in a Flask/SqlAlchemy application stack. 
 
-With Flask-Muck you don't have to worry about the CRUD.
+
 
 ```python
 from flask import Blueprint
