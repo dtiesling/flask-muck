@@ -38,6 +38,7 @@ blueprint = Blueprint("api", __name__, url_prefix="/api/")
 ParentApiView.add_rules_to_blueprint(blueprint)
 ChildApiView.add_rules_to_blueprint(blueprint)
 ```
+
 1. Setting the `parent` class variable to another FlaskMuckApiView is all that is needed to set up nesting.
 2. The `Child` model must have a foreign key column that references the `Parent` model.
 
