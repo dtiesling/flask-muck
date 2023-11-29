@@ -65,6 +65,7 @@ flask-sqlalchemy = "^3.1.1"
 coverage = "^7.3.2"
 pytest-cov = "^4.1.0"
 mkdocs-material = "^9.4.11"
+mkdocstrings = {extras = ["python"], version = "^0.24.0"}
 
 [tool.mypy]
 packages = "src"

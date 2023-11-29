@@ -9,7 +9,7 @@ class CallbackType(Enum):
     post = "post"
 
 
-class MuckCallback(ABC):
+class FlaskMuckCallback(ABC):
     def __init__(self, resource: SqlaModel, kwargs: JsonDict):
         self.resource = resource
         self.kwargs = kwargs

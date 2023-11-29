@@ -32,16 +32,22 @@ theme:
         name: Switch to light mode
 plugins:
   - search
+  - mkdocstrings
 markdown_extensions:
   - attr_list
   - admonition
   - abbr
   - md_in_html
   - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 extra_css:
   - stylesheets/extra.css
 nav:
   - About: index.md
   - Installation: installation.md
   - Quick Start: quickstart.md
+  - Configuration: configuration.md
   - Nesting APIs: nesting_apis.md
+  - API Reference: api_reference.md

@@ -12,7 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields as mf
 from sqlalchemy.orm import DeclarativeBase, Mapped
 
-from flask_muck import MuckCallback
+from flask_muck import FlaskMuckCallback
 from flask_muck.views import FlaskMuckApiView
 
 
@@ -110,12 +110,12 @@ def logout_view():
 
 
 # Add Muck views to generate CRUD REST API.
-class PreCallback(MuckCallback):
+class PreCallback(FlaskMuckCallback):
     def execute(self) -> None:
         return
 
 
-class PostCallback(MuckCallback):
+class PostCallback(FlaskMuckCallback):
     def execute(self) -> None:
         return
 
