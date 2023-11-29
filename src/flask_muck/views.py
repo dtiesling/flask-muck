@@ -49,9 +49,9 @@ class FlaskMuckApiView(MethodView):
     parent: Optional[type[FlaskMuckApiView]] = None
 
     ResponseSchema: type[Schema]
-    CreateSchema: type[Schema] = None
-    UpdateSchema: type[Schema] = None
-    PatchSchema: type[Schema] = None
+    CreateSchema: Optional[type[Schema]] = None
+    UpdateSchema: Optional[type[Schema]] = None
+    PatchSchema: Optional[type[Schema]] = None
     DeleteSchema: Optional[type[Schema]] = None
     DetailSchema: Optional[type[Schema]] = None
 
