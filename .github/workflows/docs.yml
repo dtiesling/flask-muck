@@ -1,5 +1,4 @@
-
-name: ci
+name: Docs Deploy
 on:
   push:
     branches:
@@ -8,6 +7,7 @@ permissions:
   contents: write
 jobs:
   deploy:
+    name: Deploy Docs to GH Pages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +25,11 @@ jobs:
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - run: pip install mkdocs-material
-      - run: |
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install --with docs
+      - name: GH Pages deploy
+        run: |
           cd docs
-          mkdocs gh-deploy --force
+          poetry run mkdocs gh-deploy --force
