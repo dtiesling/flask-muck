@@ -1,9 +1,8 @@
-
-name: ci
+name: Docs Deploy
 on:
-  push
-#    branches:
-#      - main
+  push:
+    branches:
+      - main
 permissions:
   contents: write
 jobs:
