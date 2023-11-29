@@ -23,7 +23,7 @@ from webargs.flaskparser import parser
 from werkzeug.exceptions import MethodNotAllowed, BadRequest, Conflict
 
 from flask_muck.callback import CallbackType
-from flask_muck.callback import MuckCallback
+from flask_muck.callback import FlaskMuckCallback
 from flask_muck.types import SqlaModelType, JsonDict, ResourceId, SqlaModel
 from flask_muck.utils import (
     get_url_rule,
@@ -46,26 +46,26 @@ class FlaskMuckApiView(MethodView):
     session: scoped_session
     api_name: str
     Model: SqlaModelType
-
-    CreateSchema: type[Schema]
-    UpdateSchema: type[Schema]
-    PatchSchema: type[Schema]
-    DeleteSchema: Optional[type[Schema]] = None
-    ResponseSchema: type[Schema]
-    DetailSchema: type[Schema]
-
-    pre_create_callbacks: list[type[MuckCallback]] = []
-    pre_update_callbacks: list[type[MuckCallback]] = []
-    pre_patch_callbacks: list[type[MuckCallback]] = []
-    pre_delete_callbacks: list[type[MuckCallback]] = []
-
-    post_create_callbacks: list[type[MuckCallback]] = []
-    post_update_callbacks: list[type[MuckCallback]] = []
-    post_patch_callbacks: list[type[MuckCallback]] = []
-    post_delete_callbacks: list[type[MuckCallback]] = []
-
-    searchable_columns: Optional[list[InstrumentedAttribute]] = None
     parent: Optional[type[FlaskMuckApiView]] = None
+
+    ResponseSchema: type[Schema]
+    CreateSchema: type[Schema] = None
+    UpdateSchema: type[Schema] = None
+    PatchSchema: type[Schema] = None
+    DeleteSchema: Optional[type[Schema]] = None
+    DetailSchema: Optional[type[Schema]] = None
+
+    pre_create_callbacks: list[type[FlaskMuckCallback]] = []
+    pre_update_callbacks: list[type[FlaskMuckCallback]] = []
+    pre_patch_callbacks: list[type[FlaskMuckCallback]] = []
+    pre_delete_callbacks: list[type[FlaskMuckCallback]] = []
+
+    post_create_callbacks: list[type[FlaskMuckCallback]] = []
+    post_update_callbacks: list[type[FlaskMuckCallback]] = []
+    post_patch_callbacks: list[type[FlaskMuckCallback]] = []
+    post_delete_callbacks: list[type[FlaskMuckCallback]] = []
+
+    searchable_columns: list[InstrumentedAttribute] = []
     default_pagination_limit: int = 20
     one_to_one_api: bool = False
     allowed_methods: set[str] = {"GET", "POST", "PUT", "PATCH", "DELETE"}
@@ -76,7 +76,6 @@ class FlaskMuckApiView(MethodView):
         return self.session.query(self.Model)
 
     def dispatch_request(self, **kwargs: Any) -> ResponseReturnValue:
-        """Overriden to check the list of allowed_methods."""
         if request.method.lower() not in [m.lower() for m in self.allowed_methods]:
             raise MethodNotAllowed
         return super().dispatch_request(**kwargs)
@@ -339,7 +338,6 @@ class FlaskMuckApiView(MethodView):
         else:
             _Model = self.Model
 
-        order_by = None
         if hasattr(_Model, column_name):
             column = getattr(_Model, column_name)
             if direction == "asc":

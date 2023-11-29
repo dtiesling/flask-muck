@@ -66,7 +66,7 @@ This produces the following nested api resources.
     If your models are not using standard integer or UUID primary keys nested APIs may not work correctly.
 
 
-## Complete Example
+## Usage Example
 !!! note
     This example expands on the example in the [quickstart](quickstart.md). If you have not read through the
     [quickstart](quickstart.md) this will make more sense if you do.
