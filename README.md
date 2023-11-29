@@ -79,9 +79,10 @@ Flask-Muck supports Python >= 3.9
 
 ## Documentation
 
-Refer to the [examples](./examples) directory for more information on usage and available features.
+Documentation is available at [https://dtiesling.github.io/flask-muck/](https://dtiesling.github.io/flask-muck/). Check 
+back often, documentation is being expanded nightly at this time.
 
-Full documentation is a work-in-progress but will be completed soon. It can be found [here](https://dtiesling.github.io/flask-muck/). 
+There are also examples of complete Flask apps using Flask-Muck in the [examples](./examples) directory.
 
 ## Issues
 
