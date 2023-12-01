@@ -50,5 +50,6 @@ nav:
   - Quick Start: quickstart.md
   - Configuration: configuration.md
   - Nesting APIs: nesting_apis.md
+  - Pre/Post Callbacks: callbacks.md
   - Supporting Logical Data Separation (Multi-tenancy): logical_separation.md
   - API Reference: api_reference.md
