@@ -24,7 +24,7 @@ class TodoApiView(FlaskMuckApiView):
 Creates of a single new resource. The `CreateSchema` is used to validate the request body and the `ResponseSchema`
 is used to serialize the newly created resource in the response body.
 
-??? example
+???+ example
     ```bash title="cURL Command"
     curl -X POST --location "http://127.0.0.1:5000/api/v1/todos" \
         -H "Content-Type: application/json" \
@@ -145,7 +145,7 @@ serialize the resources in the response body.
 An example of a complex filter using operators and relationships is `filters={"list.priority__gte": 5}`. This would filter the
 ToDo items whose related list has a priority greater than or equal to 5.
 
-??? example
+???+ example
     ```bash title="cURL Command"
     curl -X GET --location "http://127.0.0.1:5000/api/v1/todos?filters=%7B%22text%22%3A+%22Take+out+garbage+again%22%7D" \
         -d "Accept: application/json"
