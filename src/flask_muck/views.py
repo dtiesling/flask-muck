@@ -119,10 +119,16 @@ class FlaskMuckApiView(MethodView):
         """Creates the correct schema based on request method and returns a sanitized dictionary of kwargs from the
         request json.
         """
+        if self.PatchSchema:
+            patch_schema = self.PatchSchema(partial=True)
+        elif self.UpdateSchema:
+            patch_schema = self.UpdateSchema(partial=True)
+        else:
+            None
         schema_method_map = {
             "POST": self.CreateSchema() if self.CreateSchema else None,
             "PUT": self.UpdateSchema() if self.UpdateSchema else None,
-            "PATCH": self.PatchSchema(partial=True) if self.PatchSchema else None,
+            "PATCH": patch_schema,
             "DELETE": self.DeleteSchema() if self.DeleteSchema else None,
         }
         schema = schema_method_map[request.method]
