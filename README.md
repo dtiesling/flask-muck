@@ -73,6 +73,12 @@ MyModelApiView.add_rules_to_blueprint(blueprint)
 - Fully compatible with any other Flask method-based or class-based views. Mix & match with your existing views.
 - Pre and post callbacks configurable on all manipulation endpoints. Allow for adding arbitrary logic before and after Create, Update or Delete operations.
 
+## Documentation
+
+Please visit the docs at [https://dtiesling.github.io/flask-muck/](https://dtiesling.github.io/flask-muck/) for explanation of all features and 
+advanced usage guides.
+
+There are also examples of complete Flask apps using Flask-Muck in the [examples](./examples) directory.
 
 ## Install
 
@@ -81,13 +87,6 @@ Flask-Muck is in Beta and does not have a standard version available for install
 `pip install flask-muck`
 
 Flask-Muck supports Python >= 3.9
-
-## Documentation
-
-Documentation is available at [https://dtiesling.github.io/flask-muck/](https://dtiesling.github.io/flask-muck/). Check 
-back often, documentation is being expanded nightly at this time.
-
-There are also examples of complete Flask apps using Flask-Muck in the [examples](./examples) directory.
 
 ## Issues
 

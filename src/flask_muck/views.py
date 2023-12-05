@@ -213,15 +213,12 @@ class FlaskMuckApiView(MethodView):
             return response_data, 200
 
     def _create_resource(self, kwargs: JsonDict) -> SqlaModel:
-        """Override this method if the kwargs need to be modified before being passed to the Model"""
-
         resource = self.Model(**kwargs)
         self.session.add(resource)
         self.session.flush()
         return resource
 
     def _update_resource(self, resource: SqlaModel, kwargs: JsonDict) -> SqlaModel:
-        """Override this method if you want to customize update."""
         for attr, value in kwargs.items():
             setattr(resource, attr, value)
         return resource

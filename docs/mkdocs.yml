@@ -61,4 +61,5 @@ nav:
   - Nesting APIs: nesting_apis.md
   - Pre/Post Callbacks: callbacks.md
   - Supporting Logical Data Separation (Multi-tenancy): logical_separation.md
+  - Escape Hatches: escape_hatches.md
   - API Reference: api_reference.md
