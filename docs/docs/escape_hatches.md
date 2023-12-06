@@ -54,7 +54,7 @@ FlaskMuckApiView has two simple methods for creating (POST) and updating (PUT/PA
 These methods are designed as override points, allowing customization of resource creation and updating. For instance, if all your models have a `create` class method for resource creation, you could override `_create_resource` to use this method instead of the default constructor:
 
 ```python
-    def __create_resource(self, kwargs: JsonDict) -> SqlaModel:
+    def _create_resource(self, kwargs: JsonDict) -> SqlaModel:
         resource = self.Model.create(**kwargs)
         return resource
 ```

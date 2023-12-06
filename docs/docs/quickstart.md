@@ -44,7 +44,7 @@ class BaseApiView(FlaskMuckApiView):
     For the remainder of this guide we'll assume usage of the [Flask-SqlAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/quickstart/#quick-start) extension.
 
 ## Create SQLAlchemy Model
-Flask-Muck requires the use of SQLAlchemy's [declarative system](). If you are not using the declarative system, you will need to review those [docs]() and re-evaluate whether Flask-Muck is the right choice for your project. Explaining the full process of creating and registering a SQLAlchemy model in your Flask app is outside the scope of this guide. The example code below shows the model class we will be creating an API for in the rest of the guide.
+Flask-Muck requires the use of SQLAlchemy's [declarative system](https://docs.sqlalchemy.org/en/20/orm/quickstart.html). If you are not using the declarative system, you will need to review those [docs](https://docs.sqlalchemy.org/en/20/orm/quickstart.html) and re-evaluate whether Flask-Muck is the right choice for your project. Explaining the full process of creating and registering a SQLAlchemy model in your Flask app is outside the scope of this guide. The example code below shows the model class we will be creating an API for in the rest of the guide.
 
 ```python
 from myapp import db
@@ -55,7 +55,7 @@ class Teacher(db.Model):
     years_teaching = db.Column(db.Integer)
 ```
 
-## Create Input and Response Marshmallow Schemas
+## Create Request and Response Marshmallow Schemas
 Flask-Muck requires configuring [Marshmallow](https://marshmallow.readthedocs.io/en/stable/) schemas that will be used to validate the payload data for the Create, Update, Patch, and (optionally) Delete endpoints. Additionally, a schema must be supplied that will serialize the endpoint's resource in responses. In this example, a simple schema is defined that can be re-used for all validation and serialization.
 
 ```python

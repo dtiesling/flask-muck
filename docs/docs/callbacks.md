@@ -69,9 +69,9 @@ from flask import request
 from flask_login import current_user
 from flask_muck import FlaskMuckCallback
 
-from myapp.utils import add_audit_log  # (1)!
-from myapp.utils import verify_teacher  # (2)!
-from myapp.utils import send_welcome_email  # (3)!
+from myapp.utils import add_audit_log#(1)!
+from myapp.utils import verify_teacher#(2)!
+from myapp.utils import send_welcome_email#(3)!
 
 class VerifyTeacherCredentialsCallback(FlaskMuckCallback):
     """Check external service to verify a teacher has the correct teaching credentials."""
@@ -135,8 +135,8 @@ class TeacherApiView(BaseApiView):
     PatchSchema = TeacherSchema 
     UpdateSchema = TeacherSchema 
     
-    pre_create_callbacks = [VerifyTeacherCredentialsCallback]  # (1)!
-    post_create_callbacks = [AuditLogCallback, SendWelcomeEmailCallback]  # (2)!
+    pre_create_callbacks = [VerifyTeacherCredentialsCallback]#(1)!
+    post_create_callbacks = [AuditLogCallback, SendWelcomeEmailCallback]#(2)!
     post_patch_callbacks = [AuditLogCallback]
     post_update_callbacks = [AuditLogCallback]
     post_delete_callbacks = [AuditLogCallback]

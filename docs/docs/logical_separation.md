@@ -2,7 +2,7 @@
 
 A common architecture in web applications is multi-tenancy through logical separation. `FlaskMuckApiView` includes a method, `get_base_query_kwargs`, which can be overridden to generate a set of arguments passed to all queries. This method enables filtering of resources to those available to a user, preventing resource leakage between tenants.
 
-The `get_base_query_kwargs` should return a dictionary of keyword arguments. These kwargs are applied to CRUD operations at the SqlAlchemy level. For example, the GET /<resource>/ endpoint will generate the query `Model.query.filter_by(**get_base_query_kwargs()).all()` instead of `Model.query.all()`. The keyword arguments are also applied when creating or updating a model.
+The `get_base_query_kwargs` should return a dictionary of keyword arguments. These kwargs are applied to CRUD operations at the SqlAlchemy level. For example, the GET /<resource\>/ endpoint will generate the query `Model.query.filter_by(**get_base_query_kwargs()).all()` instead of `Model.query.all()`. The keyword arguments are also applied when creating or updating a model.
 
 ```python
 from flask_login import current_user
@@ -12,7 +12,7 @@ class MyApiView(FlaskMuckApiView):
     ...
     
     def get_base_query_kwargs(self):
-        return {"organization_id": current_user.organization_id}  # (1)!
+        return {"organization_id": current_user.organization_id}#(1)!
 ```
 
 1. Assumes the resource has an `organization_id` column and it will be filtered by the current user's organization ID.
@@ -67,7 +67,7 @@ class BaseApiView(FlaskMuckApiView):
 
 class OrganizationResourceApiView(BaseApiView):
     def get_base_query_kwargs(self):
-        return {"organization_id": current_user.organization_id}  # (2)!
+        return {"organization_id": current_user.organization_id}#(2)!
 ```
 
 1. Flask-Login enforces user authentication by adding the `login_required` decorator.
