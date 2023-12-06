@@ -1,15 +1,11 @@
 # Nesting Resource APIs
 
-Nesting hierarchical resources in a REST API is a common practice. Flask-Muck provides out-of-the-box support for 
-generating nested APIs if the SqlAlchemy models are related by a basic foreign key relationship. Nested APIs automatically
-handle filtering child resources and  supplying the parent id as input during the Create operation.
+Nesting hierarchical resources in a REST API is a common practice. Flask-Muck provides support for generating nested APIs if the SqlAlchemy models are related by a basic foreign key relationship. Nested APIs automatically handle filtering child resources and supplying the parent ID as input during the Create operation.
 
-Creating the nested relationship is as simple as setting the `parent` class variable of a FlaskMuckApiView to another 
-FlaskMuckApiView who's `Model` has a valid foreign key relationship. 
+Creating a nested relationship is as simple as setting the `parent` class variable of a `FlaskMuckApiView` to another `FlaskMuckApiView` whose `Model` has a valid foreign key relationship.
 
 ```python
 from flask import Blueprint
-
 from flask_muck import FlaskMuckApiView
 from myapp import db
 from myapp.models import Parent, Child
@@ -20,8 +16,8 @@ class ParentApiView(FlaskMuckApiView):
     session = db.session
     Model = Parent
     ResponseSchema = ParentSchema
-    CreateSchema = Parentchema
-    PatchSchema = Parentchema
+    CreateSchema = ParentSchema
+    PatchSchema = ParentSchema
     UpdateSchema = ParentSchema
     
 class ChildApiView(FlaskMuckApiView):
@@ -39,10 +35,10 @@ ParentApiView.add_rules_to_blueprint(blueprint)
 ChildApiView.add_rules_to_blueprint(blueprint)
 ```
 
-1. Setting the `parent` class variable to another FlaskMuckApiView is all that is needed to set up nesting.
+1. Setting the `parent` class variable to another `FlaskMuckApiView` is all that is needed to set up nesting.
 2. The `Child` model must have a foreign key column that references the `Parent` model.
 
-This produces the following nested api resources.
+This setup produces the following nested API resources:
 
 | URL Path                           | Method | Description                               |
 |------------------------------------|--------|-------------------------------------------|
@@ -52,7 +48,7 @@ This produces the following nested api resources.
 | /api/parents/<ID\>/                | PUT    | Update a parent                           |
 | /api/parents/<ID\>/                | PATCH  | Patch a parent                            |
 | /api/parents/<ID\>/                | DELETE | Delete a parent                           |
-| /api/parents/<ID\>/children/       | GET    | List all of a parent's children           |
+| /api/parents/<ID\>/children/       | GET    | List all children of a parent             |
 | /api/parents/<ID\>/children/       | POST   | Create a child foreign keyed to a parent. |
 | /api/parents/<ID\>/children/<ID\>/ | GET    | Fetch a child                             |
 | /api/parents/<ID\>/children/<ID\>/ | PUT    | Update a child                            |
@@ -60,21 +56,19 @@ This produces the following nested api resources.
 | /api/parents/<ID\>/children/<ID\>/ | DELETE | Delete a child                            |
 
 !!! Tip
-    Nesting APIs works recursively so you don't have to stop at one level of nesting. 
+    Nesting APIs works recursively, allowing for multiple levels of nesting.
 
 !!! Warning
-    If your models are not using standard integer or UUID primary keys nested APIs may not work correctly.
-
+    Nested APIs may not function correctly if your models do not use standard integer or UUID primary keys.
 
 ## Usage Example
+
 !!! note
-    This example expands on the example in the [quickstart](quickstart.md). If you have not read through the
-    [quickstart](quickstart.md) this will make more sense if you do.
+    This example builds upon the [quickstart](quickstart.md) example. It will be more comprehensible if you have read through the [quickstart](quickstart.md).
 
-Let's say that we wanted to add a nested endpoint to our teacher detail endpoint from the quickstart that would allow us
-to work with all of a teacher's students.
+Suppose you want to add a nested endpoint to the teacher detail endpoint from the quickstart, allowing you to manage all of a teacher's students.
 
-Below are the models, schemas and views we would need.
+Below are the necessary models, schemas, and views:
 
 ```python title="myapp/models.py"
 from myapp import db
@@ -130,7 +124,7 @@ class TeacherApiView(BaseApiView):
 
     
 class StudentApiView(BaseApiView):
-    api_name = "student" 
+    api_name = "students" 
     Model = Student 
     parent = TeacherApiView
     ResponseSchema = StudentSchema 
