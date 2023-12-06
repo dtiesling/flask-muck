@@ -7,6 +7,8 @@
 [![License - MIT](https://img.shields.io/badge/license-MIT-9400d3.svg)](https://spdx.org/licenses/)
 ![downloads](https://img.shields.io/pypi/dm/flask-muck)
 [![pypi version](https://img.shields.io/pypi/v/flask-muck)](https://pypi.org/project/Flask-Muck/)
+[![All Contributors](https://img.shields.io/github/all-contributors/dtiesling/flask-muck?color=ee8449&style=flat-square)](#contributors)
+
 
 
 # Flask-Muck
@@ -100,5 +102,15 @@ Post any questions you have as a [GitHub issue](https://github.com/dtiesling/fla
 
 MIT licensed. See the [LICENSE](./LICENSE) file for more details.
 
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 
