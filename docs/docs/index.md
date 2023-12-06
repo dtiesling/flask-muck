@@ -19,7 +19,7 @@ Update and Delete (CRUD) endpoints in a Flask/SqlAlchemy application stack.
 ## Features
 - Automatic generation of CRUD endpoints.
 - Built-in search, filter, sort and pagination when listing resources.
-- Support for APIs with nested resources (i.e. /api/class/<ID>/students).
+- Support for APIs with nested resources (i.e. /api/class/\<ID\>/students).
 - Fully compatible with any other Flask method-based or class-based views. Mix & match with your existing views.
 - Pre and post callbacks configurable on all manipulation endpoints that allow for arbitrary logic before and after Create, Update or Delete operations.
 
