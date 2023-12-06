@@ -1,0 +1,26 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "samdatkins",
+      "name": "atkins",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20110283?v=4",
+      "profile": "https://github.com/samdatkins",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "flask-muck",
+  "projectOwner": "dtiesling"
+}
