@@ -43,6 +43,39 @@ METHOD_OPERATION_MAP = {
 
 
 class FlaskMuckApiView(MethodView):
+    """
+    Class representing a Flask API view for handling CRUD operations on a SQLAlchemy model.
+
+    Attributes:
+        session (scoped_session): The SQLAlchemy scoped session used for database operations.
+        api_name (str): The name of the API.
+        Model (SqlaModelType): The SQLAlchemy model for the API.
+        parent (Optional[type[FlaskMuckApiView]]): The parent API view if this view is a child API view.
+
+        ResponseSchema (type[Schema]): The marshmallow schema for serializing the response data.
+        CreateSchema (Optional[type[Schema]]): The marshmallow schema for validating and serializing create data.
+        UpdateSchema (Optional[type[Schema]]): The marshmallow schema for validating and serializing update data.
+        PatchSchema (Optional[type[Schema]]): The marshmallow schema for validating and serializing patch data.
+        DeleteSchema (Optional[type[Schema]]): The marshmallow schema for validating and serializing delete data.
+        DetailSchema (Optional[type[Schema]]): The marshmallow schema for serializing detail data.
+
+        pre_create_callbacks (list[type[FlaskMuckCallback]]): A list of pre-create callbacks.
+        pre_update_callbacks (list[type[FlaskMuckCallback]]): A list of pre-update callbacks.
+        pre_patch_callbacks (list[type[FlaskMuckCallback]]): A list of pre-patch callbacks.
+        pre_delete_callbacks (list[type[FlaskMuckCallback]]): A list of pre-delete callbacks.
+
+        post_create_callbacks (list[type[FlaskMuckCallback]]): A list of post-create callbacks.
+        post_update_callbacks (list[type[FlaskMuckCallback]]): A list of post-update callbacks.
+        post_patch_callbacks (list[type[FlaskMuckCallback]]): A list of post-patch callbacks.
+        post_delete_callbacks (list[type[FlaskMuckCallback]]): A list of post-delete callbacks.
+
+        searchable_columns (list[InstrumentedAttribute]): A list of columns that can be searched.
+        default_pagination_limit (int): The default pagination limit.
+        one_to_one_api (bool): Indicates whether the API represents a one-to-one relationship.
+        allowed_methods (set[str]): A set of allowed HTTP methods.
+        operator_separator (str): The separator used in filter operators.
+    """
+
     session: scoped_session
     api_name: str
     Model: SqlaModelType

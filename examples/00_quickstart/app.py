@@ -8,7 +8,6 @@ from flask_muck import FlaskMuckApiView
 
 # Create a Flask app
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "super-secret"
 
 
 # Init Flask-SQLAlchemy and set database to a local sqlite file.
