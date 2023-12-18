@@ -24,12 +24,14 @@ from werkzeug.exceptions import MethodNotAllowed, BadRequest, Conflict
 
 from flask_muck.callback import CallbackType
 from flask_muck.callback import FlaskMuckCallback
-from flask_muck.types import SqlaModelType, JsonDict, ResourceId, SqlaModel
+from flask_muck.types import SqlaModelType, JsonDict, ResourceId, SqlaModel, Serializer
 from flask_muck.utils import (
     get_url_rule,
     get_query_filters_from_request_path,
     get_pk_column,
     get_pk_type,
+    serialize_model_instance,
+    validate_payload,
 )
 
 logger = getLogger(__name__)
@@ -52,12 +54,12 @@ class FlaskMuckApiView(MethodView):
         Model (SqlaModelType): The SQLAlchemy model for the API.
         parent (Optional[type[FlaskMuckApiView]]): The parent API view if this view is a child API view.
 
-        ResponseSchema (type[Schema]): The marshmallow schema for serializing the response data.
-        CreateSchema (Optional[type[Schema]]): The marshmallow schema for validating and serializing create data.
-        UpdateSchema (Optional[type[Schema]]): The marshmallow schema for validating and serializing update data.
-        PatchSchema (Optional[type[Schema]]): The marshmallow schema for validating and serializing patch data.
-        DeleteSchema (Optional[type[Schema]]): The marshmallow schema for validating and serializing delete data.
-        DetailSchema (Optional[type[Schema]]): The marshmallow schema for serializing detail data.
+        ResponseSchema (type[Serializer]): The marshmallow schema or Pydantic model  for serializing the response data.
+        CreateSchema (Optional[type[Serializer]]): The marshmallow schema or Pydantic model  for validating and serializing create data.
+        UpdateSchema (Optional[type[Serializer]]): The marshmallow schema or Pydantic model  for validating and serializing update data.
+        PatchSchema (Optional[type[Serializer]]): The marshmallow schema or Pydantic model  for validating and serializing patch data.
+        DeleteSchema (Optional[type[Serializer]]): The marshmallow schema or Pydantic model  for validating and serializing delete data.
+        DetailSchema (Optional[type[Serializer]]): The marshmallow schema or Pydantic model  for serializing detail data.
 
         pre_create_callbacks (list[type[FlaskMuckCallback]]): A list of pre-create callbacks.
         pre_update_callbacks (list[type[FlaskMuckCallback]]): A list of pre-update callbacks.
@@ -81,7 +83,7 @@ class FlaskMuckApiView(MethodView):
     Model: SqlaModelType
     parent: Optional[type[FlaskMuckApiView]] = None
 
-    ResponseSchema: type[Schema]
+    ResponseSchema: Serializer
     CreateSchema: Optional[type[Schema]] = None
     UpdateSchema: Optional[type[Schema]] = None
     PatchSchema: Optional[type[Schema]] = None
@@ -152,22 +154,20 @@ class FlaskMuckApiView(MethodView):
         """Creates the correct schema based on request method and returns a sanitized dictionary of kwargs from the
         request json.
         """
-        if self.PatchSchema:
-            patch_schema = self.PatchSchema(partial=True)
-        elif self.UpdateSchema:
-            patch_schema = self.UpdateSchema(partial=True)
-        else:
-            None
-        schema_method_map = {
-            "POST": self.CreateSchema() if self.CreateSchema else None,
-            "PUT": self.UpdateSchema() if self.UpdateSchema else None,
-            "PATCH": patch_schema,
-            "DELETE": self.DeleteSchema() if self.DeleteSchema else None,
+        serializer_method_map = {
+            "POST": self.CreateSchema,
+            "PUT": self.UpdateSchema,
+            "PATCH": self.PatchSchema or self.UpdateSchema,
+            "DELETE": self.DeleteSchema,
         }
-        schema = schema_method_map[request.method]
-        if not schema:
+        serializer = serializer_method_map[request.method]
+        if not serializer:
             raise NotImplementedError
-        kwargs = schema.load(request.json or {})
+        kwargs = validate_payload(
+            payload=request.json or {},
+            serializer=serializer,
+            partial=request.method == "PATCH",
+        )
         kwargs.update(self.get_base_query_kwargs())
         return kwargs
 
@@ -194,9 +194,12 @@ class FlaskMuckApiView(MethodView):
         if resource_id or self.one_to_one_api:
             resource = self._get_resource(resource_id)
             if hasattr(self, "DetailSchema") and self.DetailSchema:
-                return self.DetailSchema().dump(resource)
+                return serialize_model_instance(resource, self.DetailSchema), 200
             else:
-                return self.ResponseSchema().dump(resource)
+                return (
+                    serialize_model_instance(resource, self.ResponseSchema),
+                    200,
+                )
         else:
             query = self._get_base_query()
             query_filters: list = []
@@ -230,6 +233,7 @@ class FlaskMuckApiView(MethodView):
 
             # If offset or limit were included in the query params return paginated response object else return a flat
             # list of all items.
+            response_data: Union[dict, list]
             if offset or limit:
                 query_limit = limit or self.default_pagination_limit
                 query_offset = offset or 0
@@ -238,11 +242,16 @@ class FlaskMuckApiView(MethodView):
                     "limit": query_limit,
                     "offset": query_offset,
                     "total": query.count(),
-                    "items": self.ResponseSchema(many=True).dump(resources),
+                    "items": [
+                        serialize_model_instance(r, self.ResponseSchema)
+                        for r in resources
+                    ],
                 }
             else:
                 resources = query.all()
-                response_data = self.ResponseSchema(many=True).dump(resources)
+                response_data = [
+                    serialize_model_instance(r, self.ResponseSchema) for r in resources
+                ]
             return response_data, 200
 
     def _create_resource(self, kwargs: JsonDict) -> SqlaModel:
@@ -270,7 +279,7 @@ class FlaskMuckApiView(MethodView):
         self._execute_callbacks(resource, kwargs, CallbackType.pre)
         self.session.commit()
         self._execute_callbacks(resource, kwargs, CallbackType.post)
-        return self.ResponseSchema().dump(resource), 201
+        return serialize_model_instance(resource, self.ResponseSchema), 201
 
     def put(self, resource_id: ResourceId, **kwargs: Any) -> tuple[JsonDict, int]:
         if not self.UpdateSchema:
@@ -281,7 +290,7 @@ class FlaskMuckApiView(MethodView):
         self._execute_callbacks(resource, kwargs, CallbackType.pre)
         self.session.commit()
         self._execute_callbacks(resource, kwargs, CallbackType.post)
-        return self.ResponseSchema().dump(resource), 200
+        return serialize_model_instance(resource, self.ResponseSchema), 200
 
     def patch(self, resource_id: ResourceId, **kwargs: Any) -> tuple[JsonDict, int]:
         if not self.PatchSchema:
@@ -292,7 +301,7 @@ class FlaskMuckApiView(MethodView):
         self._execute_callbacks(resource, kwargs, CallbackType.pre)
         self.session.commit()
         self._execute_callbacks(resource, kwargs, CallbackType.post)
-        return self.ResponseSchema().dump(resource), 200
+        return serialize_model_instance(resource, self.ResponseSchema), 200
 
     def delete(self, resource_id: ResourceId, **kwargs: Any) -> tuple[str, int]:
         resource = self._get_resource(resource_id)

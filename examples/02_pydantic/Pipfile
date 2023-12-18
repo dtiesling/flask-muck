@@ -8,7 +8,6 @@ flask = "*"
 flask-sqlalchemy = "*"
 pipenv = "*"
 install = "*"
-marshmallow = "*"
 flask-muck = {file = "../.."}
 webargs = "*"
 pydantic = "*"

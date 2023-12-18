@@ -55,8 +55,16 @@ class Teacher(db.Model):
     years_teaching = db.Column(db.Integer)
 ```
 
-## Create Request and Response Marshmallow Schemas
-Flask-Muck requires configuring [Marshmallow](https://marshmallow.readthedocs.io/en/stable/) schemas that will be used to validate the payload data for the Create, Update, Patch, and (optionally) Delete endpoints. Additionally, a schema must be supplied that will serialize the endpoint's resource in responses. In this example, a simple schema is defined that can be re-used for all validation and serialization.
+## Create Request and Response Schemas
+Flask-Muck requires configuring Marshmallow and/or Pydantic classes that will be used to validate the payload data for 
+the Create, Update, Patch, and (optionally) Delete endpoints. Additionally, a schema must be supplied that will 
+serialize the endpoint's resource in responses. In this example, a simple schema is defined that can be re-used for 
+all validation and serialization. In this example you'll be defining [Marshmallow](https://marshmallow.readthedocs.io/en/stable/)
+schemas. 
+
+!!! tip
+    In v0.2.0 and higher, Pydantic models can also be used as schemas. You can see an example app using Pydantic models
+    [here](https://github.com/dtiesling/flask-muck/tree/main/examples/02_pydantic)
 
 ```python
 from marshmallow import Schema, fields as mf

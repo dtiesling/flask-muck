@@ -16,7 +16,7 @@
 
 With Flask-Muck you don't have to worry about the CRUD.
 
-Flask-Muck is a batteries-included framework for automatically generating RESTful APIs with Create, Read, 
+Flask-Muck is a batteries-included declarative framework for automatically generating RESTful APIs with Create, Read, 
 Update and Delete (CRUD) endpoints in a Flask/SqlAlchemy application stack in as little as 9 lines of code. 
 
 
@@ -68,11 +68,12 @@ MyModelApiView.add_rules_to_blueprint(blueprint)
 ```
 
 ## Features
-- Automatic generation of CRUD endpoints.
+- Uses a declarative and modular approach to automatically generate CRUD endpoints.
 - Built-in search, filter, sort and pagination when listing resources.
 - Support for APIs with nested resources (i.e. /api/classrooms/12345/students).
 - Fully compatible with any other Flask method-based or class-based views. Mix & match with your existing views.
 - Pre and post callbacks configurable on all manipulation endpoints. Allow for adding arbitrary logic before and after Create, Update or Delete operations.
+- Supports Marshmallow and Pydantic for schema definitions.
 
 ## Documentation
 
@@ -124,3 +125,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+## Support 
+
+Thanks for the stars! They mean nothing but bring me immense satisfaction. Keep 'em coming.
+
+[![Star History Chart](https://api.star-history.com/svg?repos=dtiesling/flask-muck&type=Date)](https://star-history.com/#dtiesling/flask-muck&Date)
