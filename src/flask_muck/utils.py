@@ -7,7 +7,7 @@ from pydantic import BaseModel, create_model
 from sqlalchemy import Column, inspect
 
 from flask_muck.exceptions import MuckImplementationError
-from flask_muck.types import SqlaModelType, SqlaModel, JsonDict, Serializer
+from flask_muck.types import SqlaModelType, SqlaModel, JsonDict, SerializerType
 
 if TYPE_CHECKING:
     from flask_muck.views import FlaskMuckApiView
@@ -84,7 +84,9 @@ def get_join_models_from_parent_views(
     return join_models
 
 
-def serialize_model_instance(instance: SqlaModel, serializer: Serializer) -> JsonDict:
+def serialize_model_instance(
+    instance: SqlaModel, serializer: SerializerType
+) -> JsonDict:
     """Serializes a SQLAlchemy model instance using a Marshmallow schema or Pydantic model."""
     if issubclass(serializer, Schema):
         return serializer().dump(instance)
@@ -108,7 +110,7 @@ def pydantic_model_to_optional(model: type[BaseModel]) -> type[BaseModel]:
 
 
 def validate_payload(
-    payload: JsonDict, serializer: Serializer, partial: bool = False
+    payload: JsonDict, serializer: SerializerType, partial: bool = False
 ) -> JsonDict:
     """Validates JSON payload data and returns it if valid."""
     if issubclass(serializer, Schema):

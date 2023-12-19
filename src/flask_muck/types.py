@@ -9,4 +9,4 @@ JsonDict = dict[str, Any]
 ResourceId = Union[str, int]
 SqlaModelType = type[DeclarativeBase]
 SqlaModel = DeclarativeBase
-Serializer = Union[type[Schema], type[BaseModel]]
+SerializerType = Union[type[Schema], type[BaseModel]]

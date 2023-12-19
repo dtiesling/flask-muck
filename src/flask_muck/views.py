@@ -24,7 +24,13 @@ from werkzeug.exceptions import MethodNotAllowed, BadRequest, Conflict
 
 from flask_muck.callback import CallbackType
 from flask_muck.callback import FlaskMuckCallback
-from flask_muck.types import SqlaModelType, JsonDict, ResourceId, SqlaModel, Serializer
+from flask_muck.types import (
+    SqlaModelType,
+    JsonDict,
+    ResourceId,
+    SqlaModel,
+    SerializerType,
+)
 from flask_muck.utils import (
     get_url_rule,
     get_query_filters_from_request_path,
@@ -83,7 +89,7 @@ class FlaskMuckApiView(MethodView):
     Model: SqlaModelType
     parent: Optional[type[FlaskMuckApiView]] = None
 
-    ResponseSchema: Serializer
+    ResponseSchema: SerializerType
     CreateSchema: Optional[type[Schema]] = None
     UpdateSchema: Optional[type[Schema]] = None
     PatchSchema: Optional[type[Schema]] = None
