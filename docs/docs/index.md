@@ -17,11 +17,12 @@ Update and Delete (CRUD) endpoints in a Flask/SqlAlchemy application stack.
 *With Flask-Muck you don't have to worry about the CRUD.*
 
 ## Features
-- Automatic generation of CRUD endpoints.
+- Uses a declarative and modular approach to automatically generate CRUD endpoints.
 - Built-in search, filter, sort and pagination when listing resources.
 - Support for APIs with nested resources (i.e. /api/class/\<ID\>/students).
 - Fully compatible with any other Flask method-based or class-based views. Mix & match with your existing views.
 - Pre and post callbacks configurable on all manipulation endpoints that allow for arbitrary logic before and after Create, Update or Delete operations.
+- Supports Marshmallow and Pydantic for schema definitions.
 
 ## License
 Flask-Muck is distributed under the [MIT](https://spdx.org/licenses/MIT.html) license.

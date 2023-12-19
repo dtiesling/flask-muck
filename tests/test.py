@@ -2,6 +2,7 @@ import json
 from unittest.mock import patch
 
 import pytest
+from pydantic import BaseModel, ConfigDict
 
 from flask_muck.exceptions import MuckImplementationError
 from flask_muck.utils import (
@@ -417,3 +418,43 @@ class TestBaseQueryKwargs:
             f"/guardians/{marge.id}/children/{bart.id}/toy/",
             json={"name": "Scooter"},
         )
+
+
+class GuardianPydanticModel(BaseModel):
+    name: str
+
+
+class TestPydantic:
+    @pytest.fixture(autouse=True)
+    def pydantic_swap(self, monkeypatch):
+        monkeypatch.setattr(GuardianApiView, "ResponseSchema", GuardianPydanticModel)
+        monkeypatch.setattr(GuardianApiView, "CreateSchema", GuardianPydanticModel)
+        monkeypatch.setattr(GuardianApiView, "UpdateSchema", GuardianPydanticModel)
+        monkeypatch.setattr(GuardianApiView, "PatchSchema", GuardianPydanticModel)
+
+    def test_create(self, post, user):
+        response = post("/guardians/", json={"name": "Jill"})
+        parent = GuardianModel.query.one()
+        assert response == {"name": parent.name}
+
+        # Verify integrity errors are handled.
+        post("/guardians/", json={"name": "Jill"}, expected_status_code=409)
+
+    def test_read(self, get, user, guardian, child):
+        assert get(f"/guardians/") == [{"name": guardian.name}]
+        assert get(f"/guardians/{guardian.id}/") == {
+            "name": "Samantha",
+            "children": [{"name": "Tamara"}],
+        }
+
+    def test_update(self, put, patch, guardian):
+        assert put(f"/guardians/{guardian.id}/", json={"name": "updated"}) == {
+            "name": "updated"
+        }
+        assert patch(f"/guardians/{guardian.id}/", json={"name": "patched"}) == {
+            "name": "patched"
+        }
+
+    def test_delete(self, client, guardian):
+        client.delete(f"/guardians/{guardian.id}/")
+        assert GuardianModel.query.count() == 0
