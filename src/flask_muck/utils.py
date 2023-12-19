@@ -89,7 +89,7 @@ def serialize_model_instance(instance: SqlaModel, serializer: Serializer) -> Jso
     if issubclass(serializer, Schema):
         return serializer().dump(instance)
     elif issubclass(serializer, BaseModel):
-        return serializer.model_validate(instance, from_attributes=True).model_dump()  # type: ignore
+        return serializer.model_validate(instance, from_attributes=True).model_dump()
     else:
         raise TypeError(
             f"Schemas must be Marshmallow Schemas or Pydantic BaseModels. {serializer} is a {type(serializer)}"
@@ -98,7 +98,7 @@ def serialize_model_instance(instance: SqlaModel, serializer: Serializer) -> Jso
 
 def pydantic_model_to_optional(model: type[BaseModel]) -> type[BaseModel]:
     """Returns a new model where all fields are Optional. Used for PATCH JSON payload validation."""
-    return create_model(
+    return create_model(  # type: ignore
         model.__class__.__name__,
         **{
             name: (Optional[type_], None)
@@ -117,7 +117,7 @@ def validate_payload(
         if partial:
             serializer = pydantic_model_to_optional(serializer)
         serializer.model_config["from_attributes"] = True
-        return serializer.model_validate(payload).model_dump()  # type: ignore
+        return serializer.model_validate(payload).model_dump()
     else:
         raise TypeError(
             f"Schemas must be Marshmallow Schemas or Pydantic BaseModels. {serializer} is a {type(serializer)}"
