@@ -104,6 +104,26 @@ All non-bug-related discussions such as support or feature requests should be su
 
 MIT licensed. See the [LICENSE](./LICENSE) file for more details.
 
+## Contributing
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+### How should I write my commits?
+
+This project uses [release please](https://github.com/googleapis/release-please) and [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) for versioning releases.
+
+Per [release-please-action](https://github.com/google-github-actions/release-please-action):
+
+> The most important prefixes you should have in mind are:
+>
+> - `fix``: which represents bug fixes, and correlates to a SemVer patch.
+> - `feat``: which represents a new feature, and correlates to a SemVer minor.
+> - `feat!``:, or fix!:, refactor!:, etc., which represent a breaking change (indicated by the !) and will result in a SemVer major.
+
+Any PR with `fix`, `feat`, `docs`, or a conventional commit with an `!` will trigger a release PR when merged.
+
+Other conventional commits such as `chore`, `ci`, `test`, `refactor`, etc will not trigger a release but are encouraged to form a standard around conventional commits in the commit history.
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -123,8 +143,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 ## Support 
 

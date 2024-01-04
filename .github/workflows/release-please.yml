@@ -1,0 +1,22 @@
+on:
+  push:
+    branches:
+      - main
+
+permissions: {}
+
+name: release-please
+
+jobs:
+  release-please:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v4
+        with:
+          # in order to trigger other actions such as Pypi Publish
+          # need to use a PAT other than the default GITHUB_TOKEN
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          release-type: python
