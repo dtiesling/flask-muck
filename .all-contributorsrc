@@ -15,6 +15,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "bt-macole",
+      "name": "Mason Cole",
+      "avatar_url": "https://avatars.githubusercontent.com/u/117116981?v=4",
+      "profile": "https://github.com/bt-macole",
+      "contributions": [
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,
