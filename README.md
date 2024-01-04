@@ -135,6 +135,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/samdatkins"><img src="https://avatars.githubusercontent.com/u/20110283?v=4?s=100" width="100px;" alt="atkins"/><br /><sub><b>atkins</b></sub></a><br /><a href="https://github.com/dtiesling/flask-muck/commits?author=samdatkins" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/bt-macole"><img src="https://avatars.githubusercontent.com/u/117116981?v=4?s=100" width="100px;" alt="Mason Cole"/><br /><sub><b>Mason Cole</b></sub></a><br /><a href="#infra-bt-macole" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
     </tr>
   </tbody>
 </table>
