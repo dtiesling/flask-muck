@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "Flask-Muck"
-dynamic = ["version"]
+name = "flask-muck"
+version = "0.2.0"
 authors = [
   { name="Daniel Tiesling", email="tiesling@gmail.com" },
 ]
