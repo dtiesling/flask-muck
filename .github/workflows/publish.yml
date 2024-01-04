@@ -22,6 +22,5 @@ jobs:
         run: pip install hatch
       - name: Publish to Pypi
         run: |
-          hatch version
           hatch build
           hatch publish -n
