@@ -18,11 +18,16 @@ classifiers = [
     "Framework :: Flask"
 ]
 dependencies = [
-    "Flask >= 2.0.0",
+    "Flask >= 1.4.0",
     "sqlalchemy >= 1.4.0",
     "webargs >= 8.0.0",
     "marshmallow >= 3.15.0",
-    "pydantic >= 2.0"
+    "pydantic >= 2.0",
+    "apispec >= 6.3.0",
+    "rich >= 13.7.0",
+    "pyhumps >= 3.8.0",
+    "flasgger >= 0.9.7.1",
+    "marshmallow-jsonschema >= 0.13.0"
 ]
 
 [project.urls]
@@ -57,6 +62,11 @@ webargs = "^8.3.0"
 marshmallow = "^3.20.1"
 mkdocstrings = {extras = ["python"], version = "^0.24.0"}
 pydantic = "^2.5.2"
+apispec = "^6.3.0"
+rich = "^13.7.0"
+pyhumps = "^3.8.0"
+flasgger = "^0.9.7.1"
+marshmallow-jsonschema = "^0.13.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.6.1"
@@ -68,6 +78,7 @@ flask-login = "^0.6.3"
 flask-sqlalchemy = "^3.1.1"
 coverage = "^7.3.2"
 pytest-cov = "^4.1.0"
+syrupy = "^4.6.0"
 
 [tool.poetry.group.docs]
 optional = true

@@ -32,12 +32,11 @@ from flask_muck.types import (
     SerializerType,
 )
 from flask_muck.utils import (
-    get_url_rule,
     get_query_filters_from_request_path,
     get_pk_column,
-    get_pk_type,
     serialize_model_instance,
     validate_payload,
+    register_muck_view,
 )
 
 logger = getLogger(__name__)
@@ -421,34 +420,5 @@ class FlaskMuckApiView(MethodView):
 
     @classmethod
     def add_rules_to_blueprint(cls, blueprint: Blueprint) -> None:
-        """Adds CRUD endpoints to a blueprint."""
-        url_rule = get_url_rule(cls, None)
-        api_view = cls.as_view(f"{cls.api_name}_api")
-
-        # In the special case that this API represents a ONE-TO-ONE relationship, use / for all methods.
-        if cls.one_to_one_api:
-            blueprint.add_url_rule(
-                url_rule,
-                defaults={"resource_id": None},
-                view_func=api_view,
-                methods={"GET", "PUT", "PATCH", "DELETE"},
-            )
-
-        else:
-            # Create endpoint - POST on /
-            blueprint.add_url_rule(url_rule, view_func=api_view, methods=["POST"])
-
-            # List endpoint - GET on /
-            blueprint.add_url_rule(
-                url_rule,
-                defaults={"resource_id": None},
-                view_func=api_view,
-                methods=["GET"],
-            )
-
-            # Detail, Update, Patch, Delete endpoints - GET, PUT, PATCH, DELETE on /<resource_id>
-            blueprint.add_url_rule(
-                f"{url_rule}/<{get_pk_type(cls.Model)}:resource_id>/",
-                view_func=api_view,
-                methods={"GET", "PUT", "PATCH", "DELETE"},
-            )
+        """Registers necessary CRUD endpoints on a  Blueprint based on the configuration of a FlaskMuckApiView class."""
+        register_muck_view(muck_view=cls, api=blueprint, api_spec=None)

@@ -1,0 +1,634 @@
+# serializer version: 1
+# name: TestCommands.test_openapi[False]
+  '''
+  No Flask-Muck extension initialized in this app
+  
+  '''
+# ---
+# name: TestCommands.test_openapi[True]
+  ''
+# ---
+# name: TestOpenAPI.test_openapi_marshmallow[True]
+  dict({
+    'components': dict({
+      'schemas': dict({
+        'ChildSchema': dict({
+          'additionalProperties': False,
+          'properties': dict({
+            'guardian_id': dict({
+              'title': 'guardian_id',
+              'type': 'integer',
+            }),
+            'name': dict({
+              'title': 'name',
+              'type': 'string',
+            }),
+          }),
+          'required': list([
+            'guardian_id',
+            'name',
+          ]),
+          'type': 'object',
+        }),
+        'GuardianModel': dict({
+          'properties': dict({
+            'name': dict({
+              'title': 'Name',
+              'type': 'string',
+            }),
+          }),
+          'required': list([
+            'name',
+          ]),
+          'title': 'GuardianSchema',
+          'type': 'object',
+        }),
+        'ToySchema': dict({
+          'additionalProperties': False,
+          'properties': dict({
+            'child_id': dict({
+              'title': 'child_id',
+              'type': 'integer',
+            }),
+            'name': dict({
+              'title': 'name',
+              'type': 'string',
+            }),
+          }),
+          'required': list([
+            'child_id',
+            'name',
+          ]),
+          'type': 'object',
+        }),
+      }),
+    }),
+    'info': dict({
+      'title': 'REST API',
+      'version': '1.0.0',
+    }),
+    'openapi': '3.0.3',
+    'paths': dict({
+      '/guardians/': dict({
+        'get': dict({
+          'description': 'Fetches GuardianModel resources with support for searching, filtering, sorting and pagination.',
+          'parameters': list([
+            dict({
+              'description': 'Number of resources to return. Using this parameter will return a paginated response.',
+              'in': 'query',
+              'name': 'limit',
+              'required': False,
+              'schema': dict({
+                'type': 'integer',
+              }),
+            }),
+            dict({
+              'description': 'Number of resources to skip. Using this parameter will return a paginated response.',
+              'in': 'query',
+              'name': 'offset',
+              'required': False,
+              'schema': dict({
+                'type': 'integer',
+              }),
+            }),
+            dict({
+              'description': 'Search term to match resources against.',
+              'in': 'query',
+              'name': 'search',
+              'required': False,
+              'schema': dict({
+                'type': 'string',
+              }),
+            }),
+            dict({
+              'description': '''
+                
+                JSON-encoded object used to filter the resources. Filtering can be done 
+                against any field on the resource and supports filtering against relationships 
+                using dot notation. Operators are supported using the syntax:  `<column>__<operator>` 
+                for more complex filtering. Available operators are below:.
+                
+                | Operator | Description              |
+                |----------|--------------------------|
+                | None     | Equals                   |
+                | `ne`     | Not Equals               |
+                | `lt`     | Less Than                |
+                | `lte`    | Less Than or Equal To    |
+                | `gt`     | Greater Than             |
+                | `gte`    | Greater Than or Equal To |
+                | `in`     | In                       |
+                | `not_in` | Not In                   |
+  
+              ''',
+              'in': 'query',
+              'name': 'filter',
+              'required': False,
+              'schema': dict({
+                'type': 'string',
+              }),
+            }),
+            dict({
+              'description': 'Sorts resources by the provided field. Use dot notation to sort by a related field and the `asc` or `desc` suffix to specify the sort order.',
+              'example': 'id__asc',
+              'in': 'query',
+              'name': 'sort',
+              'required': False,
+              'schema': dict({
+                'type': 'string',
+              }),
+            }),
+          ]),
+          'responses': dict({
+            '200': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    'oneOf': list([
+                      dict({
+                        'items': dict({
+                          '$ref': '#/components/schemas/GuardianModel',
+                        }),
+                        'type': 'array',
+                      }),
+                      dict({
+                        'properties': dict({
+                          'items': dict({
+                            'items': dict({
+                              '$ref': '#/components/schemas/GuardianModel',
+                            }),
+                            'type': 'array',
+                          }),
+                          'limit': dict({
+                            'type': 'integer',
+                          }),
+                          'offset': dict({
+                            'type': 'integer',
+                          }),
+                          'total': dict({
+                            'type': 'integer',
+                          }),
+                        }),
+                        'type': 'object',
+                      }),
+                    ]),
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'List GuardianModel resources',
+          'tags': list([
+            'guardians',
+          ]),
+        }),
+      }),
+      '/guardians/{guardian_model_id}/': dict({
+        'delete': dict({
+          'responses': dict({
+            '204': dict({
+              'description': 'Deleted successfully',
+            }),
+          }),
+          'summary': 'Delete GuardianModel resource',
+          'tags': list([
+            'guardians',
+          ]),
+        }),
+        'get': dict({
+          'responses': dict({
+            '200': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    '$ref': '#/components/schemas/GuardianModel',
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'Fetch GuardianModel resource',
+          'tags': list([
+            'guardians',
+          ]),
+        }),
+        'parameters': list([
+          dict({
+            'description': 'ID of the GuardianModel resource',
+            'in': 'path',
+            'name': 'guardian_model_id',
+            'required': True,
+            'schema': dict({
+              'type': 'integer',
+            }),
+          }),
+        ]),
+        'patch': dict({
+          'responses': dict({
+            '200': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    '$ref': '#/components/schemas/GuardianModel',
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'Patch GuardianModel resource',
+          'tags': list([
+            'guardians',
+          ]),
+        }),
+        'post': dict({
+          'responses': dict({
+            '201': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    '$ref': '#/components/schemas/GuardianModel',
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'Create GuardianModel resource',
+          'tags': list([
+            'guardians',
+          ]),
+        }),
+        'put': dict({
+          'responses': dict({
+            '200': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    '$ref': '#/components/schemas/GuardianModel',
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'Update GuardianModel resource',
+          'tags': list([
+            'guardians',
+          ]),
+        }),
+        'summary': 'CRUD operations for a GuardianModel resource',
+      }),
+      '/guardians/{guardian_model_id}/children/': dict({
+        'get': dict({
+          'description': 'Fetches ChildSchema resources with support for searching, filtering, sorting and pagination.',
+          'parameters': list([
+            dict({
+              'description': 'Number of resources to return. Using this parameter will return a paginated response.',
+              'in': 'query',
+              'name': 'limit',
+              'required': False,
+              'schema': dict({
+                'type': 'integer',
+              }),
+            }),
+            dict({
+              'description': 'Number of resources to skip. Using this parameter will return a paginated response.',
+              'in': 'query',
+              'name': 'offset',
+              'required': False,
+              'schema': dict({
+                'type': 'integer',
+              }),
+            }),
+            dict({
+              'description': 'Search term to match resources against.',
+              'in': 'query',
+              'name': 'search',
+              'required': False,
+              'schema': dict({
+                'type': 'string',
+              }),
+            }),
+            dict({
+              'description': '''
+                
+                JSON-encoded object used to filter the resources. Filtering can be done 
+                against any field on the resource and supports filtering against relationships 
+                using dot notation. Operators are supported using the syntax:  `<column>__<operator>` 
+                for more complex filtering. Available operators are below:.
+                
+                | Operator | Description              |
+                |----------|--------------------------|
+                | None     | Equals                   |
+                | `ne`     | Not Equals               |
+                | `lt`     | Less Than                |
+                | `lte`    | Less Than or Equal To    |
+                | `gt`     | Greater Than             |
+                | `gte`    | Greater Than or Equal To |
+                | `in`     | In                       |
+                | `not_in` | Not In                   |
+  
+              ''',
+              'in': 'query',
+              'name': 'filter',
+              'required': False,
+              'schema': dict({
+                'type': 'string',
+              }),
+            }),
+            dict({
+              'description': 'Sorts resources by the provided field. Use dot notation to sort by a related field and the `asc` or `desc` suffix to specify the sort order.',
+              'example': 'id__asc',
+              'in': 'query',
+              'name': 'sort',
+              'required': False,
+              'schema': dict({
+                'type': 'string',
+              }),
+            }),
+          ]),
+          'responses': dict({
+            '200': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    'oneOf': list([
+                      dict({
+                        'items': dict({
+                          '$ref': '#/components/schemas/ChildSchema',
+                        }),
+                        'type': 'array',
+                      }),
+                      dict({
+                        'properties': dict({
+                          'items': dict({
+                            'items': dict({
+                              '$ref': '#/components/schemas/ChildSchema',
+                            }),
+                            'type': 'array',
+                          }),
+                          'limit': dict({
+                            'type': 'integer',
+                          }),
+                          'offset': dict({
+                            'type': 'integer',
+                          }),
+                          'total': dict({
+                            'type': 'integer',
+                          }),
+                        }),
+                        'type': 'object',
+                      }),
+                    ]),
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'List ChildSchema resources',
+          'tags': list([
+            'children',
+          ]),
+        }),
+        'parameters': list([
+          dict({
+            'description': 'ID of the GuardianModel resource',
+            'in': 'path',
+            'name': 'guardian_model_id',
+            'required': True,
+            'schema': dict({
+              'type': 'integer',
+            }),
+          }),
+        ]),
+      }),
+      '/guardians/{guardian_model_id}/children/{child_model_id}/': dict({
+        'delete': dict({
+          'responses': dict({
+            '204': dict({
+              'description': 'Deleted successfully',
+            }),
+          }),
+          'summary': 'Delete ChildSchema resource',
+          'tags': list([
+            'children',
+          ]),
+        }),
+        'get': dict({
+          'responses': dict({
+            '200': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    '$ref': '#/components/schemas/ChildSchema',
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'Fetch ChildSchema resource',
+          'tags': list([
+            'children',
+          ]),
+        }),
+        'parameters': list([
+          dict({
+            'description': 'ID of the GuardianModel resource',
+            'in': 'path',
+            'name': 'guardian_model_id',
+            'required': True,
+            'schema': dict({
+              'type': 'integer',
+            }),
+          }),
+          dict({
+            'description': 'ID of the ChildModel resource',
+            'in': 'path',
+            'name': 'child_model_id',
+            'required': True,
+            'schema': dict({
+              'type': 'integer',
+            }),
+          }),
+        ]),
+        'patch': dict({
+          'responses': dict({
+            '200': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    '$ref': '#/components/schemas/ChildSchema',
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'Patch ChildSchema resource',
+          'tags': list([
+            'children',
+          ]),
+        }),
+        'post': dict({
+          'responses': dict({
+            '201': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    '$ref': '#/components/schemas/ChildSchema',
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'Create ChildSchema resource',
+          'tags': list([
+            'children',
+          ]),
+        }),
+        'put': dict({
+          'responses': dict({
+            '200': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    '$ref': '#/components/schemas/ChildSchema',
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'Update ChildSchema resource',
+          'tags': list([
+            'children',
+          ]),
+        }),
+        'summary': 'CRUD operations for a ChildSchema resource',
+      }),
+      '/guardians/{guardian_model_id}/children/{child_model_id}/toy/': dict({
+        'delete': dict({
+          'responses': dict({
+            '204': dict({
+              'description': 'Deleted successfully',
+            }),
+          }),
+          'summary': 'Delete ToySchema resource',
+          'tags': list([
+            'toy',
+          ]),
+        }),
+        'description': 'CRUD operations for a ToySchema resource',
+        'get': dict({
+          'responses': dict({
+            '200': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    '$ref': '#/components/schemas/ToySchema',
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'Fetch ToySchema resource',
+          'tags': list([
+            'toy',
+          ]),
+        }),
+        'parameters': list([
+          dict({
+            'description': 'ID of the GuardianModel resource',
+            'in': 'path',
+            'name': 'guardian_model_id',
+            'required': True,
+            'schema': dict({
+              'type': 'integer',
+            }),
+          }),
+          dict({
+            'description': 'ID of the ChildModel resource',
+            'in': 'path',
+            'name': 'child_model_id',
+            'required': True,
+            'schema': dict({
+              'type': 'integer',
+            }),
+          }),
+        ]),
+        'patch': dict({
+          'responses': dict({
+            '200': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    '$ref': '#/components/schemas/ToySchema',
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'Patch ToySchema resource',
+          'tags': list([
+            'toy',
+          ]),
+        }),
+        'post': dict({
+          'responses': dict({
+            '201': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    '$ref': '#/components/schemas/ToySchema',
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'Create ToySchema resource',
+          'tags': list([
+            'toy',
+          ]),
+        }),
+        'put': dict({
+          'responses': dict({
+            '200': dict({
+              'content': dict({
+                'application/json': dict({
+                  'schema': dict({
+                    '$ref': '#/components/schemas/ToySchema',
+                  }),
+                }),
+              }),
+              'description': 'Successful operation',
+            }),
+          }),
+          'summary': 'Update ToySchema resource',
+          'tags': list([
+            'toy',
+          ]),
+        }),
+        'summary': 'CRUD operations for a ToySchema resource',
+      }),
+    }),
+    'tags': list([
+      dict({
+        'name': 'guardians',
+      }),
+      dict({
+        'name': 'children',
+      }),
+      dict({
+        'name': 'toy',
+      }),
+    ]),
+  })
+# ---

@@ -1,13 +1,16 @@
 import marshmallow as ma
-from flask import Flask, Blueprint
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields as mf
 from sqlalchemy.orm import DeclarativeBase
 
+from flask_muck import FlaskMuck
 from flask_muck import FlaskMuckApiView
 
 # Create a Flask app
 app = Flask(__name__)
+muck = FlaskMuck()
+muck.init_app(app)
 
 
 # Init Flask-SQLAlchemy and set database to a local sqlite file.
@@ -36,10 +39,6 @@ class TodoSchema(ma.Schema):
     text = mf.String(required=True)
 
 
-# Add a Flask blueprint for the base of the REST API and register it with the app.
-api_blueprint = Blueprint("v1_api", __name__, url_prefix="/api/v1/")
-
-
 # Add Muck views to generate CRUD REST API.
 class BaseApiView(FlaskMuckApiView):
     """Base view to inherit from. Helpful for setting class variables shared with all API views such as "session"
@@ -61,13 +60,8 @@ class TodoApiView(BaseApiView):
     searchable_columns = [TodoModel.text]
 
 
-# Add all url rules to the blueprint.
-TodoApiView.add_rules_to_blueprint(api_blueprint)
-
-# Register api blueprint with the app.
-app.register_blueprint(api_blueprint)
-
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+        muck.register_muck_views([TodoApiView])
     app.run(debug=True)
