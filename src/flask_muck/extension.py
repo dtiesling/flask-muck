@@ -2,7 +2,7 @@ import json
 from typing import Optional
 
 from apispec import APISpec
-from flasgger import Swagger
+from flasgger import Swagger  # type: ignore
 from flask import Flask, current_app
 
 from flask_muck import FlaskMuckApiView
@@ -22,7 +22,7 @@ class FlaskMuck:
         if app is not None:
             self.init_app(app)
 
-    def init_app(self, app: Flask):
+    def init_app(self, app: Flask) -> None:
         self.registered_views = []
         app.extensions["muck"] = self
         api_title = app.config.setdefault("MUCK_API_TITLE", "REST API")

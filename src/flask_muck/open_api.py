@@ -4,14 +4,14 @@ from typing import TYPE_CHECKING, Optional
 
 from apispec import APISpec
 from marshmallow import Schema
-from marshmallow_jsonschema import JSONSchema
-from sqlalchemy.orm import DeclarativeBase
+from marshmallow_jsonschema import JSONSchema  # type: ignore
 
 from flask_muck.types import JsonDict
 from flask_muck.utils import get_url_rule, get_pk_type, get_url_path_variable
 
 if TYPE_CHECKING:
     from flask_muck import FlaskMuckApiView
+    from sqlalchemy.orm import DeclarativeBase  # type: ignore
 
 
 def _get_openapi_pk_type(model: type[DeclarativeBase]) -> str:
@@ -53,7 +53,7 @@ def _convert_flask_path_to_openapi_path(url_path: str) -> str:
 
 
 def update_spec_from_muck_view(
-    api_spec: APISpec, url_prefix: str, muck_view: type[FlaskMuckApiView]
+    api_spec: Optional[APISpec], url_prefix: str, muck_view: type[FlaskMuckApiView]
 ) -> None:
     """Updates the given APISpect with endpoints and components based on a FlaskMuckApiView."""
     if not api_spec:

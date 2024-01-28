@@ -7,9 +7,9 @@ from rich import print_json
 muck_cli = AppGroup("muck")
 
 
-@muck_cli.command()
+@muck_cli.command()  # type: ignore
 @with_appcontext
-def openapi_spec():
+def openapi_spec() -> None:
     """Print OpenAPI spec JSON for this app's API."""
     muck = current_app.extensions.get("muck")
     if muck is None:
