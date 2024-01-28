@@ -1,7 +1,10 @@
 from __future__ import annotations
+
 from typing import Optional, TYPE_CHECKING, Union, Literal
 
-from flask import request
+import humps
+from apispec import APISpec
+from flask import request, Blueprint, Flask
 from marshmallow import Schema
 from pydantic import BaseModel, create_model
 from sqlalchemy import Column, inspect
@@ -13,17 +16,24 @@ if TYPE_CHECKING:
     from flask_muck.views import FlaskMuckApiView
 
 
-def get_url_rule(muck_view: type[FlaskMuckApiView], append_rule: Optional[str]) -> str:
+def get_url_path_variable(muck_view: type[FlaskMuckApiView]) -> str:
+    """Generates the string to use for primary key variable in a Flask url path rule."""
+    return f"{humps.decamelize(muck_view.Model.__name__)}_id"
+
+
+def get_url_rule(
+    muck_view: type[FlaskMuckApiView], append_rule: Optional[str], url_prefix: str = "/"
+) -> str:
     """Recursively build the url rule for a MuckApiView by looking at its parent if it exists."""
     rule = muck_view.api_name
     if append_rule:
         rule = f"{rule}/{append_rule}"
     if muck_view.parent:
-        rule = f"<{get_pk_type(muck_view.parent.Model)}:{muck_view.parent.api_name}_id>/{rule}"
+        rule = f"<{get_pk_type(muck_view.parent.Model)}:{get_url_path_variable(muck_view.parent)}>/{rule}"
         return get_url_rule(muck_view.parent, rule)
     if not rule.endswith("/"):
         rule = rule + "/"
-    return rule
+    return f"{url_prefix}{rule}"
 
 
 def get_fk_column(
@@ -66,7 +76,7 @@ def get_query_filters_from_request_path(
         parent_model = view.parent.Model
         fk_column = get_fk_column(parent_model, child_model)
         query_filters.append(
-            fk_column == request.view_args[f"{view.parent.api_name}_id"]
+            fk_column == request.view_args[get_url_path_variable(view.parent)]
         )
         return get_query_filters_from_request_path(view.parent, query_filters)
     return query_filters
@@ -123,4 +133,50 @@ def validate_payload(
     else:
         raise TypeError(
             f"Schemas must be Marshmallow Schemas or Pydantic BaseModels. {serializer} is a {type(serializer)}"
+        )
+
+
+def register_muck_view(
+    muck_view: type[FlaskMuckApiView],
+    api: Union[Flask, Blueprint],
+    api_spec: Optional[APISpec] = None,
+    url_prefix: str = "",
+) -> None:
+    """Registers necessary CRUD endpoints on a given Flask app or Blueprint based on the configuration of a
+    FlaskMuckApiView class.
+    """
+    from flask_muck.open_api import update_spec_from_muck_view
+
+    url_rule = get_url_rule(muck_view, None, url_prefix=url_prefix)
+    api_view = muck_view.as_view(f"{muck_view.api_name}_api")
+    update_spec_from_muck_view(
+        api_spec=api_spec, url_prefix=url_prefix, muck_view=muck_view
+    )
+
+    # In the special case that this API represents a ONE-TO-ONE relationship, use / for all methods.
+    if muck_view.one_to_one_api:
+        api.add_url_rule(
+            url_rule,
+            defaults={"resource_id": None},
+            view_func=api_view,
+            methods={"POST", "GET", "PUT", "PATCH", "DELETE"},
+        )
+    else:
+        # Create endpoint - POST on /
+        api.add_url_rule(url_rule, view_func=api_view, methods=["POST"])
+
+        # List endpoint - GET on /
+        api.add_url_rule(
+            url_rule,
+            defaults={"resource_id": None},
+            view_func=api_view,
+            methods=["GET"],
+        )
+
+        # Detail, Update, Patch, Delete endpoints - GET, PUT, PATCH, DELETE on /<resource_id>
+        pk_type = get_pk_type(muck_view.Model)
+        api.add_url_rule(
+            f"{url_rule}<{pk_type}:resource_id>/",
+            view_func=api_view,
+            methods={"GET", "PUT", "PATCH", "DELETE"},
         )

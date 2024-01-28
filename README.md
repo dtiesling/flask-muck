@@ -20,10 +20,9 @@ Flask-Muck is a batteries-included declarative framework for automatically gener
 Update and Delete (CRUD) endpoints in a Flask/SqlAlchemy application stack in as little as 9 lines of code. 
 
 
-
 ```python
-from flask import Blueprint
-from flask_muck.views import FlaskMuckApiView
+from flask import Blueprint, Flask
+from flask_muck.views import FlaskMuckApiView, FlaskMuck
 import marshmallow as ma
 from marshmallow import fields as mf
 
@@ -51,10 +50,21 @@ class MyModelApiView(FlaskMuckApiView):
     searchable_columns = [MyModel.name]
 
 
+app = Flask(__name__)
+
+# Initialize the FlaskMuck extension if you want all batteries included. 
+# Using the extension will autogenerate a Swagger UI browsable api documentation at /apidocs/
+app.config['MUCK_API_URL_PREFIX'] = "/api/"
+muck = FlaskMuck()
+muck.init_app(app)
+muck.register_muck_views([MyModelApiView])
+
+# OR add CRUD views to an existing Flask Blueprint for greater flexibility
 blueprint = Blueprint("api", __name__, url_prefix="/api/")
 MyModelApiView.add_rules_to_blueprint(blueprint)
 
-# Available Endpoints:
+
+# Either option generates the following endpoints:
 # CREATE             | curl -X POST "/api/v1/my-model" -H "Content-Type: application/json" \-d "{\"name\": \"Ayla\"}"
 # LIST ALL           | curl -X GET "/api/v1/my-model" -d "Accept: application/json"
 # LIST ALL PAGINATED | curl -X GET "/api/v1/my-model?limit=100&offset=50" -d "Accept: application/json"
@@ -68,12 +78,14 @@ MyModelApiView.add_rules_to_blueprint(blueprint)
 ```
 
 ## Features
+
 - Uses a declarative and modular approach to automatically generate CRUD endpoints.
 - Built-in search, filter, sort and pagination when listing resources.
 - Support for APIs with nested resources (i.e. /api/classrooms/12345/students).
 - Fully compatible with any other Flask method-based or class-based views. Mix & match with your existing views.
 - Pre and post callbacks configurable on all manipulation endpoints. Allow for adding arbitrary logic before and after Create, Update or Delete operations.
 - Supports Marshmallow and Pydantic for schema definitions.
+- Dynamically generates OpenAPI specification and Swagger UI. 
 
 ## Documentation
 

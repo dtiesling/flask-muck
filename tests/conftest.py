@@ -2,8 +2,9 @@ from typing import Callable, Literal
 
 import pytest
 from flask import Flask
-from flask.testing import FlaskClient
+from flask.testing import FlaskClient, FlaskCliRunner
 from flask_sqlalchemy import SQLAlchemy
+from pydantic import BaseModel
 from sqlalchemy.orm import DeclarativeBase
 
 from flask_muck.types import JsonDict
@@ -91,9 +92,9 @@ def db(app) -> SQLAlchemy:
     _db.drop_all()
 
 
-@pytest.fixture(scope="session")
-def app() -> Flask:
-    app = create_app()
+@pytest.fixture(scope="session", params=[True, False])
+def app(request) -> Flask:
+    app = create_app(use_extension=request.param)
     with app.app_context():
         yield app
 
@@ -101,6 +102,11 @@ def app() -> Flask:
 @pytest.fixture
 def client(app, user) -> FlaskClient:
     return app.test_client(user=user)
+
+
+@pytest.fixture
+def cli_runner(app) -> FlaskCliRunner:
+    return app.test_cli_runner()
 
 
 @pytest.fixture
@@ -247,3 +253,16 @@ def keyboard(gene, belcher_family, create_model):
 @pytest.fixture
 def belchers(bob, tina, louise, gene, pony, hat, keyboard) -> None:
     return
+
+
+@pytest.fixture
+def pydantic_swap(monkeypatch):
+    from tests.app import GuardianApiView
+
+    class GuardianPydanticModel(BaseModel):
+        name: str
+
+    monkeypatch.setattr(GuardianApiView, "ResponseSchema", GuardianPydanticModel)
+    monkeypatch.setattr(GuardianApiView, "CreateSchema", GuardianPydanticModel)
+    monkeypatch.setattr(GuardianApiView, "UpdateSchema", GuardianPydanticModel)
+    monkeypatch.setattr(GuardianApiView, "PatchSchema", GuardianPydanticModel)

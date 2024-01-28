@@ -10,11 +10,11 @@ from flask_login import (
 )
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields as mf
+from pydantic import BaseModel
 from sqlalchemy.orm import DeclarativeBase, Mapped
 
-from flask_muck import FlaskMuckCallback
+from flask_muck import FlaskMuckCallback, FlaskMuck
 from flask_muck.views import FlaskMuckApiView
-
 
 login_manager = LoginManager()
 
@@ -66,8 +66,8 @@ class ToyModel(db.Model):
     child = db.relationship(ChildModel, back_populates="toy")
 
 
-class GuardianSchema(ma.Schema):
-    name = mf.String(required=True)
+class GuardianSchema(BaseModel):
+    name: str
 
 
 class ChildSchema(ma.Schema):
@@ -170,13 +170,7 @@ class ToyApiView(BaseApiView):
     one_to_one_api = True
 
 
-# Add all url rules to the blueprint.
-GuardianApiView.add_rules_to_blueprint(api_blueprint)
-ChildApiView.add_rules_to_blueprint(api_blueprint)
-ToyApiView.add_rules_to_blueprint(api_blueprint)
-
-
-def create_app() -> Flask:
+def create_app(use_extension: bool = True) -> Flask:
     app = Flask(__name__)
     app.config["SECRET_KEY"] = "super-secret"
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///todo_example.db"
@@ -185,5 +179,13 @@ def create_app() -> Flask:
     app.test_client_class = FlaskLoginClient
     login_manager.init_app(app)
     db.init_app(app)
-    app.register_blueprint(api_blueprint)
+    if use_extension:
+        muck = FlaskMuck(app)
+        with app.app_context():
+            muck.register_muck_views([GuardianApiView, ChildApiView, ToyApiView])
+    else:
+        GuardianApiView.add_rules_to_blueprint(api_blueprint)
+        ChildApiView.add_rules_to_blueprint(api_blueprint)
+        ToyApiView.add_rules_to_blueprint(api_blueprint)
+        app.register_blueprint(api_blueprint)
     return app

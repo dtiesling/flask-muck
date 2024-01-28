@@ -97,25 +97,56 @@ class TeacherApiView(BaseApiView):
 6. Marshmallow schema used to validate payload data sent to the Update endpoint.
 7. List of model columns that can be searched when listing Teachers using the API.
 
-## Add URL Rules to a Flask Blueprint
-The final step is to add the correct URL rules to an existing [Flask Blueprint](https://flask.palletsprojects.com/en/3.0.x/blueprints/) object. A class method is included that handles adding all necessary rules to the given Blueprint.
+## Register the FlaskMuckApiViews
+There are two options for registering the CRUD views. FlaskMuck can be initialized as a Flask extension or each 
+FlaskMuckApiView can be added to an existing Flask Blueprint. 
+
+### Initialize FlaskMuck extension.
+The FlaskMuck extension is the "batteries included" approach and handles registering all of your views to a single 
+API url root. Optionally the extension generates an OpenAPI spec definition and host a Swagger UI page.
+
+```python
+from myapp import app
+
+from flask_muck import FlaskMuck
+
+app.config['MUCK_API_URL_PREFIX'] = "/api/"
+app.config['MUCK_APIDOCS_ENABLED'] = True
+app.config['MUCK_API_TITLE'] = "School App API"
+muck = FlaskMuck(app)
+muck.register_muck_views([TeacherApiView])
+```
+
+### OR
+
+### Manually register FlaskMuckApiViews
+Manually registering each FlaskMuckApiView is an escape hatch to allow greater flexibility to work with existing 
+views in an app and other frameworks and extensions.
+
+A class method is included that handles adding all necessary rules to the given Blueprint.
 
 ```python
 from flask import Blueprint
 
+from myapp import app
+
 blueprint = Blueprint("api", __name__, url_prefix="/api/")
 TeacherApiView.add_rules_to_blueprint(blueprint)
+app.register_blueprint(blueprint)
 ```
 
-This setup produces the following views for a standard REST API:
+## Success!
 
-| URL Path           | Method | Description                                                                                               |
-|--------------------|--------|-----------------------------------------------------------------------------------------------------------|
-| /api/teachers/     | GET    | List all teachers - querystring options available for sorting, filtering, searching, and pagination      |
-| /api/teachers/     | POST   | Create a teacher                                                                                          |
-| /api/teachers/\<ID> | GET    | Fetch a single teacher                                                                                    |
-| /api/teachers/\<ID> | PUT    | Update a single teacher                                                                                   |
-| /api/teachers/\<ID> | PATCH  | Patch a single teacher                                                                                    |
-| /api/teachers/\<ID> | DELETE | Delete a single teacher                                                                                   |
+The following views are generated for a standard REST API:
+
+| URL Path                    | Method | Description                                                                                                |
+|-----------------------------|--------|------------------------------------------------------------------------------------------------------------|
+| /api/teachers/              | GET    | List all teachers - querystring options available for sorting, filtering, searching, and pagination        |
+| /api/teachers/              | POST   | Create a teacher                                                                                           |
+| /api/teachers/<TEACHER_ID\> | GET    | Fetch a single teacher                                                                                     |
+| /api/teachers/<TEACHER_ID\> | PUT    | Update a single teacher                                                                                    |
+| /api/teachers/<TEACHER_ID\> | PATCH  | Patch a single teacher                                                                                     |
+| /api/teachers/<TEACHER_ID\> | DELETE | Delete a single teacher                                                                                    |
+| /apidocs/                   | GET    | Swagger UI browsable API documentation page (Only available if FlaskMuck extension used to register views) |
 
 
