@@ -56,7 +56,7 @@ authors = ["Daniel Tiesling <tiesling@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-Flask = "^2.0.0"
+Flask = ">=2,<4"
 sqlalchemy = "^2.0.23"
 webargs = "^8.3.0"
 marshmallow = "^3.20.1"
