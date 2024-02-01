@@ -16,8 +16,8 @@
 
 With Flask-Muck you don't have to worry about the CRUD.
 
-Flask-Muck is a batteries-included declarative framework for automatically generating RESTful APIs with Create, Read, 
-Update and Delete (CRUD) endpoints in a Flask/SqlAlchemy application stack in as little as 9 lines of code. 
+Flask-Muck is a declarative framework for automatically generating RESTful APIs with Create, Read, 
+Update and Delete (CRUD) endpoints in a Flask, SqlAlchemy, Marshmallow/Pydantic application stack in as little as 9 lines of code. 
 
 
 ```python
