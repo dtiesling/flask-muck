@@ -10,7 +10,7 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 
 
-# Flask-Muck
+# Flask-Muck [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Looking%20for%20a%20Flask%20REST%20framework%20that%20generates%20CRUD%20APIs%20and%20Swagger%20docs%20for%20your%20SQLAlchemy%20models%3F%20Check%20out%20Flask-Muck&url=https://github.com/dtiesling/flask-muck&via=FlaskMuck&hashtags=python,flask,sqlalchemy,developers)
 
 ![Logo](https://dtiesling.github.io/flask-muck/img/logo.png)
 
