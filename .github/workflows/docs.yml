@@ -35,4 +35,4 @@ jobs:
           cd docs
           git pull
           poetry run hatch version
-          poetry run mike deploy --push --update-aliases `hatch version` stable
+          poetry run mike deploy --push --update-aliases `poetry run hatch version` stable
