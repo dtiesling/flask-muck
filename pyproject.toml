@@ -87,6 +87,7 @@ optional = true
 mkdocs-material = "^9.4.11"
 mkdocstrings = {extras = ["python"], version = "^0.24.0"}
 mike = "^2.0.0"
+hatch = "^1.9.3"
 
 [tool.mypy]
 packages = "src"
