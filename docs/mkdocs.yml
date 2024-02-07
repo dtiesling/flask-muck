@@ -52,6 +52,9 @@ extra:
   analytics:
     provider: google
     property: G-P32VD2EBF0
+  version:
+    provider: mike
+    default: stable
 nav:
   - About: index.md
   - Installation: installation.md
