@@ -79,9 +79,6 @@ flask-sqlalchemy = "^3.1.1"
 coverage = "^7.3.2"
 pytest-cov = "^4.1.0"
 syrupy = "^4.6.0"
-mike = "^2.0.0"
-pymdown-extensions = "^10.7"
-mkdocs-material = "^9.5.8"
 
 [tool.poetry.group.docs]
 optional = true
@@ -89,6 +86,7 @@ optional = true
 [tool.poetry.group.docs.dependencies]
 mkdocs-material = "^9.4.11"
 mkdocstrings = {extras = ["python"], version = "^0.24.0"}
+mike = "^2.0.0"
 
 [tool.mypy]
 packages = "src"
