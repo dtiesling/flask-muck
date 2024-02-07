@@ -1,8 +1,8 @@
 name: Docs Deploy
 on:
-  push:
-    branches:
-      - main
+  release:
+    types:
+      - published
 permissions:
   contents: write
 jobs:
@@ -32,4 +32,6 @@ jobs:
       - name: GH Pages deploy
         run: |
           cd docs
-          poetry run mkdocs gh-deploy --force
+          git pull
+          poetry run hatch version
+          poetry run mike deploy --push --update-aliases `poetry run hatch version` stable
