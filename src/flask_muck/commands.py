@@ -11,7 +11,6 @@ muck_cli = AppGroup("muck")
 @with_appcontext
 def openapi_spec() -> None:
     """Print OpenAPI spec JSON for this app's API."""
-    muck = current_app.extensions.get("muck")
-    if muck is None:
+    if (muck := current_app.extensions.get("muck")) is None:
         print("No Flask-Muck extension initialized in this app")
     print_json(json.dumps(muck.spec.to_dict(), indent=2))
