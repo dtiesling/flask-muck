@@ -47,7 +47,7 @@ def get_fk_column(
                     return column
     raise MuckImplementationError(
         f"The {child_model.__name__} model does not have a foreign key to the {parent_model.__name__} model. "
-        f"Your MuckApiView parents are not configured correctly."
+        "Your MuckApiView parents are not configured correctly."
     )
 
 

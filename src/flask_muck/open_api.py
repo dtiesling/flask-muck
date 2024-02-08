@@ -150,7 +150,7 @@ def update_spec_from_muck_view(
                 "get": {
                     "summary": f"List {resource_name} resources",
                     "description": f"Fetches {resource_name} resources with support for searching, filtering, "
-                    f"sorting and pagination.",
+                    "sorting and pagination.",
                     "tags": [tag_name],
                     "parameters": [
                         {
