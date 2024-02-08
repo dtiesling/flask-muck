@@ -13,4 +13,5 @@ def openapi_spec() -> None:
     """Print OpenAPI spec JSON for this app's API."""
     if (muck := current_app.extensions.get("muck")) is None:
         print("No Flask-Muck extension initialized in this app")
+        return
     print_json(json.dumps(muck.spec.to_dict(), indent=2))
