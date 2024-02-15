@@ -23,7 +23,7 @@ Go to [http://127.0.0.1:5000/apidocs/](http://127.0.0.1:5000/apidocs/) in a brow
 
 ### Create a ToDo item
 ```
-curl -X POST --location "http://127.0.0.1:5000/todos" \
+curl -X POST --location "http://127.0.0.1:5000/todos/" \
     -H "Content-Type: application/json" \
     -d "{
             \"text\": \"take out garbage again\"
@@ -32,44 +32,44 @@ curl -X POST --location "http://127.0.0.1:5000/todos" \
 
 ### List all ToDo items (flat)
 ```
-curl -X GET --location "http://127.0.0.1:5000/todos" \
+curl -X GET --location "http://127.0.0.1:5000/todos/" \
     -d "Accept: application/json"
 ```
 
 ### List all ToDo items (paginated)
 ```
-curl -X GET --location "http://127.0.0.1:5000/todos?limit=2&offset=1" \
+curl -X GET --location "http://127.0.0.1:5000/todos/?limit=2&offset=1" \
     -d "Accept: application/json"
 ```
 
 ### Search ToDo items
 ```
-curl -X GET --location "http://127.0.0.1:5000/todos?search=garbage" \
+curl -X GET --location "http://127.0.0.1:5000/todos/?search=garbage" \
     -d "Accept: application/json"
 ```
 
 ### Filter ToDo items
 ```
-curl -X GET --location "http://127.0.0.1:5000/todos?filters=%7B%22text%22%3A+%22take+out+garbage+again%22%7D" \
+curl -X GET --location "http://127.0.0.1:5000/todos/?filters=%7B%22text%22%3A+%22take+out+garbage+again%22%7D" \
     -d "Accept: application/json"
 ```
 _querystring urldecodes to `filters={"text": "take out garbage again"}`_ 
 
 ### Sort ToDo items
 ```
-curl -X GET --location "http://127.0.0.1:5000/todos?sort=text" \
+curl -X GET --location "http://127.0.0.1:5000/todos/?sort=text" \
     -d "Accept: application/json"
 ``` 
 
 ### Fetch ToDo item
 ```
-curl -X GET --location "http://127.0.0.1:5000/todos/1" \
+curl -X GET --location "http://127.0.0.1:5000/todos/1/" \
     -d "Accept: application/json"
 ```
 
 ### Update ToDo item
 ```
-curl -X PUT --location "http://127.0.0.1:5000/todos/1" \
+curl -X PUT --location "http://127.0.0.1:5000/todos/1/" \
     -H "Content-Type: application/json" \
     -d "{
             \"text\": \"Updated todo item\"
@@ -78,7 +78,7 @@ curl -X PUT --location "http://127.0.0.1:5000/todos/1" \
 
 ### Patch ToDo item
 ```
-curl -X PATCH --location "http://127.0.0.1:5000/todos/1" \
+curl -X PATCH --location "http://127.0.0.1:5000/todos/1/" \
     -H "Content-Type: application/json" \
     -d "{
             \"text\": \"Updated todo item\"
@@ -87,7 +87,5 @@ curl -X PATCH --location "http://127.0.0.1:5000/todos/1" \
 
 ### Delete ToDo Item
 ```
-curl -X DELETE --location "http://127.0.0.1:5000/todos/1"
+curl -X DELETE --location "http://127.0.0.1:5000/todos/1/"
 ```
-
-

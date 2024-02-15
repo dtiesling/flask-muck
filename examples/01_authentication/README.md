@@ -22,6 +22,10 @@ curl to store/use cookies in order to test authenticated requests.
 
 `pipenv run python3 app.py`
 
+## Swagger UI
+
+Go to [http://127.0.0.1:5000/apidocs/](http://127.0.0.1:5000/apidocs/) in a browser.
+
 ## CURL Commands
 
 ### Login

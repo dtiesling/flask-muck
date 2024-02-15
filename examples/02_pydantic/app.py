@@ -3,9 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from pydantic import BaseModel
 from sqlalchemy.orm import DeclarativeBase
 
-from flask_muck import FlaskMuckApiView
+from flask_muck import FlaskMuckApiView, FlaskMuck
 
 app = Flask(__name__)
+muck = FlaskMuck()
+muck.init_app(app)
 
 
 class Base(DeclarativeBase):
@@ -31,9 +33,6 @@ class TodoPayloadSchema(BaseModel):
     text: str
 
 
-api_blueprint = Blueprint("v1_api", __name__, url_prefix="/api/v1/")
-
-
 class TodoApiView(FlaskMuckApiView):
     session = db.session
     api_name = "todos"
@@ -45,10 +44,8 @@ class TodoApiView(FlaskMuckApiView):
     searchable_columns = [TodoModel.text]
 
 
-TodoApiView.add_rules_to_blueprint(api_blueprint)
-app.register_blueprint(api_blueprint)
-
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+        muck.register_muck_views([TodoApiView])
     app.run(debug=True)
