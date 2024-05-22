@@ -17,12 +17,12 @@
 With Flask-Muck you don't have to worry about the CRUD.
 
 Flask-Muck is a declarative framework for automatically generating RESTful APIs with Create, Read, 
-Update and Delete (CRUD) endpoints in a Flask, SqlAlchemy, Marshmallow/Pydantic application stack in as little as 9 lines of code. 
+Update and Delete (CRUD) endpoints in a Flask, SqlAlchemy, Marshmallow/Pydantic application stack in as little as 9 lines of code. Below is example code you might find in a Flask app. Please see the [docs](https://dtiesling.github.io/flask-muck/) for full working examples
 
 
 ```python
 from flask import Blueprint, Flask
-from flask_muck.views import FlaskMuckApiView, FlaskMuck
+from flask_muck import FlaskMuckApiView, FlaskMuck
 import marshmallow as ma
 from marshmallow import fields as mf
 
