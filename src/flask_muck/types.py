@@ -8,7 +8,7 @@ try:
     from sqlalchemy.orm import DeclarativeBase  # type: ignore
 except ImportError:
     # SQLAlchemy 1.4.x compatibility
-    from sqlalchemy.orm import declarative_base # type: ignore
+    from sqlalchemy.orm import declarative_base  # type: ignore
 
     DeclarativeBase = declarative_base()
 
