@@ -9,7 +9,7 @@ try:
 except ImportError:
     # SQLAlchemy 1.4.x compatibility
     from sqlalchemy.orm import declarative_base
-    
+
     DeclarativeBase = declarative_base()
 
 
