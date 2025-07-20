@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/dtiesling/flask-muck/compare/v0.4.0...v0.4.1) (2025-07-20)
+
+
+### Bug Fixes
+
+* bug in hatch build process ([43c460b](https://github.com/dtiesling/flask-muck/commit/43c460bb845e38707c455829020394bf745dbffd))
+
 ## [0.4.0](https://github.com/dtiesling/flask-muck/compare/v0.3.0...v0.4.0) (2025-07-20)
 
 
