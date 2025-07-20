@@ -48,6 +48,9 @@ exclude = [
 [tool.hatch.build.targets.wheel]
 packages = ["src/flask_muck"]
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.poetry]
 name = "flask-muck"
 description = "Batteries included framework for generating RESTful apis using Flask and SqlAlchemy."
