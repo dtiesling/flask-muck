@@ -27,7 +27,7 @@ dependencies = [
     "rich >= 13.7.0",
     "pyhumps >= 3.8.0",
     "flasgger >= 0.9.7.1",
-    "marshmallow-jsonschema @ git+https://github.com/dtiesling/marshmallow-jsonschema.git"
+    "marshmallow-jsonschema-python3 >= 0.13.1"
 ]
 
 [project.urls]
